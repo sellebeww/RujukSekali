@@ -11,6 +11,8 @@ const config = [
     ignores: [
       '.next/**',
       '.next-e2e/**',
+      '.next-lh/**',
+      '.next-brand/**',
       'node_modules/**',
       'drizzle/**',
       'sim/out/**',

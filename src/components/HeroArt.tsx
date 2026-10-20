@@ -25,7 +25,7 @@ export function HeroArt() {
         strokeDasharray="1200"
       />
       {stops.map((s, i) => (
-        <g key={s.label} className="fade-up" style={{ animationDelay: `${0.4 + i * 0.35}s` }}>
+        <g key={s.label}>
           <circle
             cx={s.x}
             cy={s.y}

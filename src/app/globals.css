@@ -47,9 +47,6 @@
     font-family: var(--font-display);
     letter-spacing: -0.015em;
     line-height: 1.15;
-    font-variation-settings:
-      'SOFT' 50,
-      'WONK' 0;
   }
   a {
     text-underline-offset: 3px;

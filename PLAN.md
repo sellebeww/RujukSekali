@@ -1,6 +1,6 @@
 # PLAN.md — RujukSekali MVP + Company Profile
 
-> Status: **DRAF Fase 0, menunggu persetujuan.** Belum ada kode aplikasi.
+> Status: **Disetujui ("setuju semua") pada 2026-10-20; semua fase selesai.** Kondisi kode terkini dijelaskan di `docs/ARSITEKTUR.md`; penyimpangan dari rencana dicatat di §14.
 > Nama produk "RujukSekali" bersifat sementara; semua kemunculan nama akan bersumber dari `src/config/brand.config.ts`.
 > Penanda **[ASUMSI]** = keputusan default yang bisa diubah. **[PERLU DIVERIFIKASI]** = aturan domain/regulasi yang tidak boleh dianggap benar sebelum ditinjau.
 
@@ -332,3 +332,17 @@ Setiap fase diakhiri dengan `npm run check`, commit kecil, dan laporan ≤ 15 ba
 ## 13. Yang sengaja tidak dibangun
 
 Integrasi nyata (BPJS, SATUSEHAT, SIMRS, pembayaran, WA/SMS, tiket), triase/prioritas otomatis, alur darurat, CMS/blog, sandbox demo per sesi, i18n multi-bahasa (kode tetap siap: semua teks UI di `src/content/` / kamus), analitik, deploy hosting.
+
+---
+
+## 14. Penyimpangan dari rencana (dicatat setelah implementasi)
+
+- **Demo per pengunjung:** selain DB demo terpisah yang dibangun ulang (tiap 6 jam / ganti hari), `/demo/mulai` membuat
+  salinan skenario baru per kunjungan sehingga demo selalu segar — menggantikan ide "beberapa salinan skenario di seed".
+- **Satu hold per rencana** dengan status internal `pending` (saga); `pending` yang tertinggal dikompensasi otomatis.
+- **TTL dibatasi kunjungan pertama:** penahanan tidak pernah berlaku melewati (kunjungan pertama − lead time).
+  Ditemukan saat membangun simulator.
+- **Middleware → `src/proxy.ts`** (Next.js 16 mengganti nama middleware menjadi proxy).
+- **Aksi UI** memakai server action + idempotency key dari klien; route handler hanya untuk cron, CSV, dan tukar token.
+- **Toaster** global untuk hasil aksi (hasil tetap terlihat walau kartu opsi diganti opsi baru).
+- **Database E2E terpisah** (`rujuksekali_e2e`, `rujuksekali_e2e_demo`) agar E2E tidak menyentuh data dev.

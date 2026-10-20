@@ -4,3 +4,5 @@ drizzle
 sim/out
 package-lock.json
 .next-e2e
+.next-lh
+.next-brand
