@@ -27,7 +27,8 @@ export function BeforeAfter({ sample }: { sample: Sample }) {
             onClick={() => setView(v)}
             className={`min-h-11 rounded-full px-5 font-semibold transition-colors ${view === v ? 'bg-teal text-paper' : 'text-ink hover:bg-paper-deep'}`}
           >
-            {v === 'before' ? 'Sebelum: pesan satu per satu' : 'Sesudah: satu perjalanan'}
+            {v === 'before' ? 'Sebelum' : 'Sesudah'}
+            <span className="hidden sm:inline">{v === 'before' ? ': pesan satu per satu' : ': satu perjalanan'}</span>
           </button>
         ))}
       </div>
