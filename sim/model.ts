@@ -2,7 +2,14 @@
 // Seeded and deterministic: the same parameters always produce the same numbers. Synthetic only.
 import { policy } from '@/config/policy';
 import { allowedHeld } from '@/domain/capacity';
-import { baselinePlan, planTrips, type PlanningInput, type ServiceSpec, type SlotSnapshot, type TransportOption } from '@/engine';
+import {
+  baselinePlan,
+  planTrips,
+  type PlanningInput,
+  type ServiceSpec,
+  type SlotSnapshot,
+  type TransportOption,
+} from '@/engine';
 import { createRng } from '@/lib/rng';
 import { addDays, DAY, dayOfWeek, HOUR, hhmmToMin, localToUtc, MINUTE, toLocalDate } from '@/lib/time';
 import { REGENCIES, SERVICE_TYPES, TRANSPORT } from '@seed/reference';
@@ -108,6 +115,9 @@ type Ev =
   | { t: number; seq: number; kind: 'patientCancel'; ep: Episode }
   | { t: number; seq: number; kind: 'background'; service: string; date: string };
 
+type DistOmit<T, K extends PropertyKey> = T extends unknown ? Omit<T, K> : never;
+type EvInput = DistOmit<Ev, 'seq'>;
+
 const SERVICES: ServiceSpec[] = SERVICE_TYPES.map((s) => ({
   code: s.code,
   name: s.name,
@@ -128,8 +138,15 @@ export function simulate(p: SimParams): SimMetrics {
       if (!(st.open.days as readonly number[]).includes(dayOfWeek(date))) continue;
       const load = d < 7 ? p.initialLoad : p.initialLoad * 0.4;
       st.units.forEach((_, u) => {
-        for (let m = hhmmToMin(st.open.from); m + st.durationMin <= hhmmToMin(st.open.to); m += st.durationMin) {
-          const startsAt = localToUtc(date, `${String(Math.floor(m / 60)).padStart(2, '0')}:${String(m % 60).padStart(2, '0')}`);
+        for (
+          let m = hhmmToMin(st.open.from);
+          m + st.durationMin <= hhmmToMin(st.open.to);
+          m += st.durationMin
+        ) {
+          const startsAt = localToUtc(
+            date,
+            `${String(Math.floor(m / 60)).padStart(2, '0')}:${String(m % 60).padStart(2, '0')}`,
+          );
           const s: SimSlot = {
             id: `${st.code}-${date}-${u}-${m}`,
             serviceCode: st.code,
@@ -148,10 +165,13 @@ export function simulate(p: SimParams): SimMetrics {
     }
   }
 
-  const transport: TransportOption[] = TRANSPORT.map((t, i) => ({ ...t, id: `t${i}` }));
+  const transport: (TransportOption & { originRegency: string })[] = TRANSPORT.map((t, i) => ({
+    ...t,
+    id: `t${i}`,
+  }));
   const queue: Ev[] = [];
   let seq = 0;
-  const push = (e: Omit<Ev, 'seq'>) => {
+  const push = (e: EvInput) => {
     const ev = { ...e, seq: seq++ } as Ev;
     let lo = 0;
     let hi = queue.length;
@@ -211,7 +231,9 @@ export function simulate(p: SimParams): SimMetrics {
         latest: addDays(earliest, rng.int(7, 12)),
         regency: r.name,
         escort,
-        escortDays: escort ? Array.from({ length: 16 }, (_, k) => addDays(earliest, k)).filter(() => rng.chance(p.pEscortDay)) : [],
+        escortDays: escort
+          ? Array.from({ length: 16 }, (_, k) => addDays(earliest, k)).filter(() => rng.chance(p.pEscortDay))
+          : [],
         docsReadyAt: rng.chance(p.pDocsReady) ? t : t + rng.exp(p.docDelayMeanH) * HOUR,
         escortReadyAt: escort ? t + rng.exp(p.escortReplyMeanH) * HOUR : t,
         slots: [],
@@ -232,19 +254,26 @@ export function simulate(p: SimParams): SimMetrics {
       const n = Math.round(perDay * (0.7 + rng.next() * 0.6));
       for (let i = 0; i < n; i++) {
         const target = addDays(date, rng.int(1, 7));
-        push({ t: localToUtc(date, '07:00') + rng.int(0, 9 * 60) * MINUTE, kind: 'background', service, date: target });
+        push({
+          t: localToUtc(date, '07:00') + rng.int(0, 9 * 60) * MINUTE,
+          kind: 'background',
+          service,
+          date: target,
+        });
       }
     }
   }
   m.episodes = episodes.length;
 
-  const heldOn = (service: string, date: string) => (byDay.get(`${service}|${date}`) ?? []).filter((s) => s.status === 'held').length;
+  const heldOn = (service: string, date: string) =>
+    (byDay.get(`${service}|${date}`) ?? []).filter((s) => s.status === 'held').length;
   const capReached = (from: string, to: string) => {
     const out: { serviceCode: string; localDate: string }[] = [];
     for (const [k, list] of byDay) {
       const [service, date] = k.split('|') as [string, string];
       if (date < from || date > to) continue;
-      if (list.filter((s) => s.status === 'held').length >= allowedHeld(list.length, p.maxHoldRatio)) out.push({ serviceCode: service, localDate: date });
+      if (list.filter((s) => s.status === 'held').length >= allowedHeld(list.length, p.maxHoldRatio))
+        out.push({ serviceCode: service, localDate: date });
     }
     return out;
   };
@@ -252,7 +281,8 @@ export function simulate(p: SimParams): SimMetrics {
   const input = (ep: Episode, now: number): PlanningInput => {
     const to = addDays(ep.latest, 21);
     const avail: SlotSnapshot[] = [];
-    for (const s of slots.values()) if (s.status === 'available' && s.localDate >= ep.earliest && s.localDate <= to) avail.push(s);
+    for (const s of slots.values())
+      if (s.status === 'available' && s.localDate >= ep.earliest && s.localDate <= to) avail.push(s);
     return {
       episodeId: String(ep.id),
       earliestDate: ep.earliest,
@@ -424,7 +454,9 @@ export function simulate(p: SimParams): SimMetrics {
         break;
       }
       case 'background': {
-        const list = (byDay.get(`${e.service}|${e.date}`) ?? []).filter((s) => s.status === 'available' && s.startsAt > e.t + 2 * HOUR);
+        const list = (byDay.get(`${e.service}|${e.date}`) ?? []).filter(
+          (s) => s.status === 'available' && s.startsAt > e.t + 2 * HOUR,
+        );
         if (list.length === 0) {
           if ((byDay.get(`${e.service}|${e.date}`) ?? []).length === 0) break; // clinic closed that day
           m.backgroundDenied++;

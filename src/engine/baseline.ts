@@ -40,7 +40,13 @@ export function baselinePlan(input: PlanningInput): BaselineResult {
   // Independent bookings: each service at its own earliest slot, ignoring the others.
   for (const code of order) {
     const b = bookOne(input, code, null, taken);
-    if (!b) return { visits, visitDays: new Set(visits.map((v) => v.localDate)).size, costIdr: transport, complete: false };
+    if (!b)
+      return {
+        visits,
+        visitDays: new Set(visits.map((v) => v.localDate)).size,
+        costIdr: transport,
+        complete: false,
+      };
     taken.add(b.visit.slotId);
     visits.push({ ...b.visit, wasted: false });
     transport += b.fare;
@@ -54,7 +60,13 @@ export function baselinePlan(input: PlanningInput): BaselineResult {
     if (after.startsAt >= ready) continue;
     after.wasted = true;
     const again = bookOne(input, r.after, ready, taken);
-    if (!again) return { visits, visitDays: new Set(visits.map((v) => v.localDate)).size, costIdr: transport, complete: false };
+    if (!again)
+      return {
+        visits,
+        visitDays: new Set(visits.map((v) => v.localDate)).size,
+        costIdr: transport,
+        complete: false,
+      };
     taken.add(again.visit.slotId);
     visits.push({ ...again.visit, wasted: false });
     transport += again.fare;

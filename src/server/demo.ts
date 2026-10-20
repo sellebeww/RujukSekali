@@ -19,7 +19,8 @@ export async function ensureDemoFresh(): Promise<void> {
     .then((r) => r[0])
     .catch(() => undefined);
   const today = toLocalDate(Date.now());
-  const fresh = meta && meta.startDate === today && Date.now() - meta.seededAt.getTime() < policy.demo.maxAgeHours * HOUR;
+  const fresh =
+    meta && meta.startDate === today && Date.now() - meta.seededAt.getTime() < policy.demo.maxAgeHours * HOUR;
   if (fresh) return;
   // shortcut: in-process guard only; a multi-instance deployment needs a pg advisory lock here.
   rebuilding ??= (async () => {

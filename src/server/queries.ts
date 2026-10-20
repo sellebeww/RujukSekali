@@ -23,7 +23,8 @@ import {
 } from './db/schema';
 import { allowedHeld } from './usecases/planning';
 
-export type QueueCategory = 'mendesak' | 'susun_ulang' | 'ditahan' | 'permintaan' | 'pilih_opsi' | 'baru' | 'terkonfirmasi' | 'selesai';
+export type QueueCategory =
+  'mendesak' | 'susun_ulang' | 'ditahan' | 'permintaan' | 'pilih_opsi' | 'baru' | 'terkonfirmasi' | 'selesai';
 
 export const QUEUE_LABEL: Record<QueueCategory, string> = {
   mendesak: 'Mendesak — tangani manual',
@@ -52,7 +53,16 @@ export interface QueueItem {
   firstVisit: string | null;
 }
 
-const ORDER: QueueCategory[] = ['mendesak', 'susun_ulang', 'ditahan', 'permintaan', 'pilih_opsi', 'baru', 'terkonfirmasi', 'selesai'];
+const ORDER: QueueCategory[] = [
+  'mendesak',
+  'susun_ulang',
+  'ditahan',
+  'permintaan',
+  'pilih_opsi',
+  'baru',
+  'terkonfirmasi',
+  'selesai',
+];
 
 export async function loadQueue(db: Db): Promise<QueueItem[]> {
   const eps = await db
@@ -80,7 +90,9 @@ export async function loadQueue(db: Db): Promise<QueueItem[]> {
     .select({ planId: planVisit.tripPlanId, d: planVisit.localDate })
     .from(planVisit)
     .innerJoin(tripPlan, eq(tripPlan.id, planVisit.tripPlanId))
-    .where(and(inArray(tripPlan.episodeId, ids), inArray(tripPlan.status, ['HELD', 'CONFIRMED', 'PROPOSED'])));
+    .where(
+      and(inArray(tripPlan.episodeId, ids), inArray(tripPlan.status, ['HELD', 'CONFIRMED', 'PROPOSED'])),
+    );
 
   const items = eps.map(({ ep, pt }) => {
     const mine = plans.filter((x) => x.p.episodeId === ep.id);
@@ -96,9 +108,15 @@ export async function loadQueue(db: Db): Promise<QueueItem[]> {
     else if (openRequests > 0) category = 'permintaan';
     else if (active?.p.status === 'CONFIRMED') category = 'terkonfirmasi';
     else if (proposed) category = 'pilih_opsi';
-    else if (latest && ['REPLAN_REQUIRED', 'EXPIRED', 'CANCELLED'].includes(latest.p.status)) category = 'susun_ulang';
+    else if (latest && ['REPLAN_REQUIRED', 'EXPIRED', 'CANCELLED'].includes(latest.p.status))
+      category = 'susun_ulang';
     else category = 'baru';
-    const d = shown ? visits.filter((v) => v.planId === shown.p.id).map((v) => v.d).sort()[0] ?? null : null;
+    const d = shown
+      ? (visits
+          .filter((v) => v.planId === shown.p.id)
+          .map((v) => v.d)
+          .sort()[0] ?? null)
+      : null;
     return {
       episodeId: ep.id,
       title: ep.title,
@@ -137,10 +155,18 @@ export async function loadEpisodeDetail(db: Db, episodeId: string) {
     .innerJoin(serviceType, eq(serviceType.id, episodeService.serviceTypeId))
     .where(eq(episodeService.episodeId, episodeId))
     .orderBy(asc(serviceType.sortOrder));
-  const docs = await db.select().from(document).where(eq(document.episodeId, episodeId)).orderBy(asc(document.label));
+  const docs = await db
+    .select()
+    .from(document)
+    .where(eq(document.episodeId, episodeId))
+    .orderBy(asc(document.label));
   const [esc] = await db.select().from(escort).where(eq(escort.patientId, row.pt.id));
   const escortDays = esc
-    ? await db.select().from(escortAvailability).where(eq(escortAvailability.escortId, esc.id)).orderBy(asc(escortAvailability.localDate))
+    ? await db
+        .select()
+        .from(escortAvailability)
+        .where(eq(escortAvailability.escortId, esc.id))
+        .orderBy(asc(escortAvailability.localDate))
     : [];
   const plans = await db
     .select({ p: tripPlan, h: hold })
@@ -160,7 +186,11 @@ export async function loadEpisodeDetail(db: Db, episodeId: string) {
     : [];
   const holdIds = plans.flatMap((p) => (p.h ? [p.h.id] : []));
   const extensions = holdIds.length
-    ? await db.select().from(holdExtension).where(inArray(holdExtension.holdId, holdIds)).orderBy(asc(holdExtension.at))
+    ? await db
+        .select()
+        .from(holdExtension)
+        .where(inArray(holdExtension.holdId, holdIds))
+        .orderBy(asc(holdExtension.at))
     : [];
   const auditEntityIds = [episodeId, ...planIds, ...holdIds, ...docs.map((d) => d.id)];
   const history = await db
@@ -169,8 +199,17 @@ export async function loadEpisodeDetail(db: Db, episodeId: string) {
     .where(inArray(auditLog.entityId, auditEntityIds))
     .orderBy(desc(auditLog.id))
     .limit(60);
-  const requests = await db.select().from(patientRequest).where(eq(patientRequest.episodeId, episodeId)).orderBy(desc(patientRequest.createdAt));
-  const messages = await db.select().from(outbox).where(eq(outbox.episodeId, episodeId)).orderBy(desc(outbox.createdAt)).limit(10);
+  const requests = await db
+    .select()
+    .from(patientRequest)
+    .where(eq(patientRequest.episodeId, episodeId))
+    .orderBy(desc(patientRequest.createdAt));
+  const messages = await db
+    .select()
+    .from(outbox)
+    .where(eq(outbox.episodeId, episodeId))
+    .orderBy(desc(outbox.createdAt))
+    .limit(10);
 
   const active = plans.find((p) => p.p.status === 'HELD' || p.p.status === 'CONFIRMED');
   const impact = active?.p.status === 'HELD' ? await capacityImpact(db, active.p.id) : [];
@@ -200,7 +239,12 @@ export type EpisodeDetail = NonNullable<Awaited<ReturnType<typeof loadEpisodeDet
 /** How much shared capacity this plan's hold occupies on each of its days. */
 export async function capacityImpact(db: Db, planId: string) {
   const days = await db
-    .select({ serviceTypeId: planVisit.serviceTypeId, localDate: planVisit.localDate, name: serviceType.shortName, ratio: serviceType.maxHoldRatio })
+    .select({
+      serviceTypeId: planVisit.serviceTypeId,
+      localDate: planVisit.localDate,
+      name: serviceType.shortName,
+      ratio: serviceType.maxHoldRatio,
+    })
     .from(planVisit)
     .innerJoin(serviceType, eq(serviceType.id, planVisit.serviceTypeId))
     .where(eq(planVisit.tripPlanId, planId));
@@ -236,7 +280,13 @@ export async function capacityOverview(db: Db, fromDate: string, days = 14) {
     .from(slot)
     .innerJoin(serviceType, eq(serviceType.id, slot.serviceTypeId))
     .where(and(gte(slot.localDate, fromDate), lte(slot.localDate, to)))
-    .groupBy(slot.serviceTypeId, serviceType.shortName, serviceType.maxHoldRatio, slot.localDate, serviceType.sortOrder)
+    .groupBy(
+      slot.serviceTypeId,
+      serviceType.shortName,
+      serviceType.maxHoldRatio,
+      slot.localDate,
+      serviceType.sortOrder,
+    )
     .orderBy(asc(serviceType.sortOrder), asc(slot.localDate));
 }
 

@@ -14,7 +14,7 @@ export default async function PatientPage({ searchParams }: { searchParams: Prom
   const { tautan } = await searchParams;
   const token = (await cookies()).get(PATIENT_COOKIE)?.value;
   const ctx = makeCtx('app', SYSTEM_ACTOR);
-  const episodeId = token ? await resolvePatientToken(ctx.db, token, Date.now()) : null;
+  const episodeId = token ? await resolvePatientToken(ctx.db, token, ctx.clock.now()) : null;
   if (!episodeId) {
     return (
       <div className="container-page max-w-2xl py-12 text-lg">
@@ -39,5 +39,5 @@ export default async function PatientPage({ searchParams }: { searchParams: Prom
   await expireDueHolds(ctx);
   const d = await loadEpisodeDetail(ctx.db, episodeId);
   if (!d) return null;
-  return <PatientView d={d} zone="app" now={Date.now()} />;
+  return <PatientView d={d} zone="app" now={ctx.clock.now()} />;
 }

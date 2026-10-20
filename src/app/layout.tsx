@@ -2,10 +2,16 @@ import type { Metadata, Viewport } from 'next';
 import { Fraunces, Plus_Jakarta_Sans } from 'next/font/google';
 import { brand } from '@/config/brand.config';
 import { links } from '@/config/links';
+import { Toaster } from '@/components/Toaster';
 import './globals.css';
 
 const jakarta = Plus_Jakarta_Sans({ subsets: ['latin'], variable: '--font-jakarta', display: 'swap' });
-const fraunces = Fraunces({ subsets: ['latin'], variable: '--font-fraunces', display: 'swap', axes: ['SOFT', 'opsz'] });
+const fraunces = Fraunces({
+  subsets: ['latin'],
+  variable: '--font-fraunces',
+  display: 'swap',
+  axes: ['SOFT', 'opsz'],
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL(links.site.absolute('/')),
@@ -33,6 +39,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           Langsung ke isi
         </a>
         {children}
+        <Toaster />
       </body>
     </html>
   );

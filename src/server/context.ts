@@ -8,7 +8,7 @@ import { createLogger, type Logger } from './log';
 export type Role = 'coordinator' | 'unit_admin' | 'system_admin';
 
 export interface Actor {
-  type: 'user' | 'patient' | 'system' | 'demo';
+  type: 'user' | 'patient' | 'system' | 'demo' | 'public';
   id: string | null;
   label: string;
   role: Role | null;

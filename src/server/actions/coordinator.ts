@@ -33,15 +33,29 @@ const str = (fd: FormData, k: string) => String(fd.get(k) ?? '');
 const refresh = (zone: 'app' | 'demo') => revalidatePath(zone === 'demo' ? '/demo' : '/app', 'layout');
 
 function proposalMessage(p: ProposalOutcome): ActionState {
-  if (p.status === 'manual') return { ok: false, message: 'Episode mendesak: tidak disusun otomatis.', details: p.rejections.map((r) => r.message) };
-  if (p.planIds.length === 0) return { ok: false, message: 'Belum ada rencana yang memenuhi semua syarat.', details: p.rejections.map((r) => r.message) };
+  if (p.status === 'manual')
+    return {
+      ok: false,
+      message: 'Episode mendesak: tidak disusun otomatis.',
+      details: p.rejections.map((r) => r.message),
+    };
+  if (p.planIds.length === 0)
+    return {
+      ok: false,
+      message: 'Belum ada rencana yang memenuhi semua syarat.',
+      details: p.rejections.map((r) => r.message),
+    };
   return { ok: true, message: `${p.planIds.length} opsi rencana disusun.`, details: p.notes };
 }
 
 function confirmMessage(c: ConfirmOutcome | null, okText: string): ActionState {
   if (!c) return { ok: true, message: okText };
   if (c.confirmed) return { ok: true, message: 'Semua syarat terpenuhi — jadwal terkonfirmasi.' };
-  return { ok: true, message: `${okText} Jadwal tetap ditahan sampai syarat lengkap:`, details: c.blockers.map((b) => b.message) };
+  return {
+    ok: true,
+    message: `${okText} Jadwal tetap ditahan sampai syarat lengkap:`,
+    details: c.blockers.map((b) => b.message),
+  };
 }
 
 export async function proposeAction(_: ActionState, fd: FormData): Promise<ActionState> {
@@ -80,7 +94,12 @@ export async function approveAction(_: ActionState, fd: FormData): Promise<Actio
 export async function releaseAction(_: ActionState, fd: FormData): Promise<ActionState> {
   return run(async () => {
     const zone = parseZone(fd.get('zone'));
-    const r = await releasePlan(await staffCtx(zone), str(fd, 'planId'), str(fd, 'reason'), str(fd, 'idempotencyKey'));
+    const r = await releasePlan(
+      await staffCtx(zone),
+      str(fd, 'planId'),
+      str(fd, 'reason'),
+      str(fd, 'idempotencyKey'),
+    );
     refresh(zone);
     return { ok: true, message: `Rencana dilepas. ${r.slots} slot kembali tersedia untuk pasien lain.` };
   });
@@ -89,7 +108,12 @@ export async function releaseAction(_: ActionState, fd: FormData): Promise<Actio
 export async function extendAction(_: ActionState, fd: FormData): Promise<ActionState> {
   return run(async () => {
     const zone = parseZone(fd.get('zone'));
-    const r = await extendHold(await staffCtx(zone), str(fd, 'planId'), str(fd, 'reason'), str(fd, 'idempotencyKey'));
+    const r = await extendHold(
+      await staffCtx(zone),
+      str(fd, 'planId'),
+      str(fd, 'reason'),
+      str(fd, 'idempotencyKey'),
+    );
     refresh(zone);
     return { ok: true, message: `Penahanan diperpanjang (${r.extensionsCount}/${r.maxExtensions}).` };
   });
@@ -98,9 +122,19 @@ export async function extendAction(_: ActionState, fd: FormData): Promise<Action
 export async function cancelAction(_: ActionState, fd: FormData): Promise<ActionState> {
   return run(async () => {
     const zone = parseZone(fd.get('zone'));
-    const r = await cancelPlan(await staffCtx(zone), str(fd, 'planId'), str(fd, 'reason'), str(fd, 'idempotencyKey'));
+    const r = await cancelPlan(
+      await staffCtx(zone),
+      str(fd, 'planId'),
+      str(fd, 'reason'),
+      str(fd, 'idempotencyKey'),
+    );
     refresh(zone);
-    return { ok: true, message: r.late ? 'Dibatalkan (pembatalan terlambat tercatat).' : 'Jadwal dibatalkan; slot kembali tersedia.' };
+    return {
+      ok: true,
+      message: r.late
+        ? 'Dibatalkan (pembatalan terlambat tercatat).'
+        : 'Jadwal dibatalkan; slot kembali tersedia.',
+    };
   });
 }
 
@@ -118,9 +152,18 @@ export async function priorityAction(_: ActionState, fd: FormData): Promise<Acti
     const zone = parseZone(fd.get('zone'));
     const priority = str(fd, 'priority') === 'segera' ? 'segera' : 'rutin';
     const urgent = fd.get('urgent') === 'on';
-    const res = await markPriorityChanged(await staffCtx(zone), str(fd, 'episodeId'), { priority, urgent }, str(fd, 'reason'));
+    const res = await markPriorityChanged(
+      await staffCtx(zone),
+      str(fd, 'episodeId'),
+      { priority, urgent },
+      str(fd, 'reason'),
+    );
     refresh(zone);
-    if (urgent) return { ok: true, message: 'Ditandai mendesak. Semua jadwal dilepas; tangani langsung di luar sistem.' };
+    if (urgent)
+      return {
+        ok: true,
+        message: 'Ditandai mendesak. Semua jadwal dilepas; tangani langsung di luar sistem.',
+      };
     const m = res ? proposalMessage(res) : { ok: true, message: '' };
     return { ...m, message: `Semua jadwal yang ditahan dilepas. ${m.message}` };
   });
@@ -202,8 +245,14 @@ const newEpisodeSchema = z
     holdTier: z.enum(['singkat', 'standar', 'panjang']),
     referralStatus: z.enum(['missing', 'uploaded', 'verified']),
   })
-  .refine((v) => v.latestDate >= v.earliestDate, { message: 'Tanggal paling lambat harus setelah tanggal paling awal', path: ['latestDate'] })
-  .refine((v) => !v.requiresEscort || v.escortPseudonym.length >= 2, { message: 'Isi nama samaran pendamping', path: ['escortPseudonym'] });
+  .refine((v) => v.latestDate >= v.earliestDate, {
+    message: 'Tanggal paling lambat harus setelah tanggal paling awal',
+    path: ['latestDate'],
+  })
+  .refine((v) => !v.requiresEscort || v.escortPseudonym.length >= 2, {
+    message: 'Isi nama samaran pendamping',
+    path: ['escortPseudonym'],
+  });
 
 export async function createEpisodeAction(_: ActionState, fd: FormData): Promise<ActionState> {
   const zone = parseZone(fd.get('zone'));
@@ -230,7 +279,11 @@ export async function createEpisodeAction(_: ActionState, fd: FormData): Promise
       referralStatus: str(fd, 'referralStatus'),
     });
     if (!parsed.success) {
-      return { ok: false, message: 'Periksa isian berikut:', details: parsed.error.issues.map((i) => i.message) };
+      return {
+        ok: false,
+        message: 'Periksa isian berikut:',
+        details: parsed.error.issues.map((i) => i.message),
+      };
     }
     const v = parsed.data;
     const ctx = await staffCtx(zone);
@@ -255,7 +308,11 @@ export async function createEpisodeAction(_: ActionState, fd: FormData): Promise
             escort: {
               pseudonym: v.escortPseudonym,
               relation: v.escortRelation || 'keluarga',
-              windows: v.escortDates.map((localDate) => ({ localDate, fromLocal: '05:00', toLocal: '20:00' })),
+              windows: v.escortDates.map((localDate) => ({
+                localDate,
+                fromLocal: '05:00',
+                toLocal: '20:00',
+              })),
             },
           }
         : {}),

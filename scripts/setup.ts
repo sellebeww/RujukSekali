@@ -13,7 +13,7 @@ function ensureEnv() {
   if (!existsSync('.env')) copyFileSync('.env.example', '.env');
   let text = readFileSync('.env', 'utf8');
   const fill = (k: string, v: string) => {
-    text = text.replace(new RegExp(`^${k}=\\s*$`, 'm'), `${k}=${v}`);
+    text = text.replace(new RegExp(`^${k}=[ \\t]*$`, 'm'), `${k}=${v}`);
   };
   fill('SESSION_SECRET', randomBytes(32).toString('base64url'));
   fill('NATIONAL_ID_PEPPER', randomBytes(32).toString('base64url'));

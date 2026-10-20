@@ -10,6 +10,7 @@ const config = [
   {
     ignores: [
       '.next/**',
+      '.next-e2e/**',
       'node_modules/**',
       'drizzle/**',
       'sim/out/**',

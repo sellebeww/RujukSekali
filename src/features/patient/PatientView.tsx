@@ -10,12 +10,24 @@ import { patientEscortAction, patientRescheduleAction, patientUploadAction } fro
 import type { EpisodeDetail } from '@/server/queries';
 
 /** What a patient or escort sees: plain language, large text, only their own trip. No clinical detail. */
-export function PatientView({ d, zone, token, now }: { d: EpisodeDetail; zone: 'app' | 'demo'; token?: string; now: number }) {
+export function PatientView({
+  d,
+  zone,
+  token,
+  now,
+}: {
+  d: EpisodeDetail;
+  zone: 'app' | 'demo';
+  token?: string;
+  now: number;
+}) {
   const hidden = { zone, ...(zone === 'demo' && token ? { token } : {}) };
   const plan = d.plans.find((p) => p.status === 'HELD' || p.status === 'CONFIRMED');
   const pendingDocs = d.documents.filter((x) => x.status !== 'verified');
   const days = plan ? [...new Set(plan.visits.map((v) => v.v.localDate))] : [];
-  const escortConfirmed = days.length > 0 && days.every((day) => d.escortDays.some((e) => e.localDate === day && e.status === 'confirmed'));
+  const escortConfirmed =
+    days.length > 0 &&
+    days.every((day) => d.escortDays.some((e) => e.localDate === day && e.status === 'confirmed'));
   const fasting = d.services.some((s) => s.fasting);
   const places = plan ? Object.fromEntries(plan.visits.map((v) => [v.v.slotId, v.location])) : {};
 
@@ -27,7 +39,11 @@ export function PatientView({ d, zone, token, now }: { d: EpisodeDetail; zone: '
       tone: 'bg-danger-soft',
     };
   } else if (plan?.status === 'CONFIRMED') {
-    status = { title: 'Jadwal Anda sudah pasti', body: 'Semua persyaratan lengkap. Silakan datang sesuai jadwal di bawah.', tone: 'bg-leaf-soft' };
+    status = {
+      title: 'Jadwal Anda sudah pasti',
+      body: 'Semua persyaratan lengkap. Silakan datang sesuai jadwal di bawah.',
+      tone: 'bg-leaf-soft',
+    };
   } else if (plan?.status === 'HELD') {
     status = {
       title: 'Jadwal sedang ditahan sementara untuk Anda',
@@ -44,7 +60,9 @@ export function PatientView({ d, zone, token, now }: { d: EpisodeDetail; zone: '
 
   return (
     <div className="container-page max-w-3xl py-8 text-lg">
-      <p className="text-base font-semibold tracking-wide text-clay uppercase">Perjalanan Anda ke {brand.demoHospital}</p>
+      <p className="text-base font-semibold tracking-wide text-clay uppercase">
+        Perjalanan Anda ke {brand.demoHospital}
+      </p>
       <h1 className="text-4xl">Halo, {d.patient.pseudonym}</h1>
 
       <section aria-labelledby="status" className={`mt-6 rounded-2xl ${status.tone} p-5`}>
@@ -54,7 +72,8 @@ export function PatientView({ d, zone, token, now }: { d: EpisodeDetail; zone: '
         <p className="mt-2">{status.body}</p>
         {plan?.status === 'HELD' && plan.hold && (
           <p className="mt-3 font-semibold">
-            Ditahan sampai {formatLocalDateTime(plan.hold.expiresAt.getTime())} WIB (<Countdown until={plan.hold.expiresAt.getTime()} now={now} />)
+            Ditahan sampai {formatLocalDateTime(plan.hold.expiresAt.getTime())} WIB (
+            <Countdown until={plan.hold.expiresAt.getTime()} now={now} />)
           </p>
         )}
       </section>
@@ -64,7 +83,9 @@ export function PatientView({ d, zone, token, now }: { d: EpisodeDetail; zone: '
           <h2 id="jadwal" className="text-2xl">
             {plan.detail.visitDays === 1 ? 'Cukup datang 1 hari' : `${plan.detail.visitDays} hari kunjungan`}
           </h2>
-          <p className="mt-1 text-ink-soft">Urutan di bawah sudah diatur supaya hasil pemeriksaan siap sebelum konsultasi.</p>
+          <p className="mt-1 text-ink-soft">
+            Urutan di bawah sudah diatur supaya hasil pemeriksaan siap sebelum konsultasi.
+          </p>
           <div className="mt-5">
             <JourneyTimeline plan={plan.detail} places={places} />
           </div>
@@ -75,8 +96,9 @@ export function PatientView({ d, zone, token, now }: { d: EpisodeDetail; zone: '
           <p className="text-base text-ink-soft">
             Transportasi {formatIdr(plan.detail.cost.transportIdr)}
             {plan.detail.cost.lodgingIdr > 0 && `, penginapan ${formatIdr(plan.detail.cost.lodgingIdr)}`}
-            {plan.detail.cost.lostIncomeIdr > 0 && `, perkiraan penghasilan yang hilang ${formatIdr(plan.detail.cost.lostIncomeIdr)}`}. Ini perkiraan,
-            bukan tagihan.
+            {plan.detail.cost.lostIncomeIdr > 0 &&
+              `, perkiraan penghasilan yang hilang ${formatIdr(plan.detail.cost.lostIncomeIdr)}`}
+            . Ini perkiraan, bukan tagihan.
           </p>
         </section>
       )}
@@ -90,7 +112,8 @@ export function PatientView({ d, zone, token, now }: { d: EpisodeDetail; zone: '
             <li className="ticket p-4">
               <p className="font-semibold">Datang dalam keadaan puasa</p>
               <p className="text-base text-ink-soft">
-                {d.services.find((s) => s.fasting)?.prepNote ?? 'Ikuti petunjuk petugas.'} Ikuti petunjuk petugas bila berbeda.
+                {d.services.find((s) => s.fasting)?.prepNote ?? 'Ikuti petunjuk petugas.'} Ikuti petunjuk
+                petugas bila berbeda.
               </p>
             </li>
           )}
@@ -102,11 +125,22 @@ export function PatientView({ d, zone, token, now }: { d: EpisodeDetail; zone: '
               </div>
               <p className="text-base text-ink-soft">Bawa aslinya saat datang.</p>
               {(doc.status === 'missing' || doc.status === 'expired') && (
-                <ActionForm action={patientUploadAction} hidden={{ ...hidden, documentId: doc.id }} label="Kirim foto dokumen" className="mt-3">
+                <ActionForm
+                  action={patientUploadAction}
+                  hidden={{ ...hidden, documentId: doc.id }}
+                  label="Kirim foto dokumen"
+                  className="mt-3"
+                >
                   <label htmlFor={`file-${doc.id}`} className="text-base font-semibold">
                     Foto atau berkas {doc.label.toLowerCase()}
                   </label>
-                  <input id={`file-${doc.id}`} name="file" type="file" accept="image/*,application/pdf" className="text-base" />
+                  <input
+                    id={`file-${doc.id}`}
+                    name="file"
+                    type="file"
+                    accept="image/*,application/pdf"
+                    className="text-base"
+                  />
                   <p className="text-sm text-muted">Simulasi: isi berkas tidak disimpan, hanya namanya.</p>
                 </ActionForm>
               )}
@@ -116,17 +150,26 @@ export function PatientView({ d, zone, token, now }: { d: EpisodeDetail; zone: '
             <li className="ticket p-4">
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <p className="font-semibold">Pendamping{d.escort ? `: ${d.escort.pseudonym}` : ''}</p>
-                <Badge tone={escortConfirmed ? 'leaf' : 'ochre'}>{escortConfirmed ? 'Sudah konfirmasi' : 'Belum konfirmasi'}</Badge>
+                <Badge tone={escortConfirmed ? 'leaf' : 'ochre'}>
+                  {escortConfirmed ? 'Sudah konfirmasi' : 'Belum konfirmasi'}
+                </Badge>
               </div>
               {plan && !escortConfirmed && (
-                <ActionForm action={patientEscortAction} hidden={hidden} label="Pendamping bisa ikut di semua hari ini" className="mt-3">
+                <ActionForm
+                  action={patientEscortAction}
+                  hidden={hidden}
+                  label="Pendamping bisa ikut di semua hari ini"
+                  className="mt-3"
+                >
                   <p className="text-base">{days.map(formatLocalDate).join(', ')}</p>
                 </ActionForm>
               )}
             </li>
           )}
         </ul>
-        {pendingDocs.length === 0 && !d.episode.requiresEscort && !fasting && <p className="mt-3">Tidak ada yang perlu disiapkan selain kartu identitas.</p>}
+        {pendingDocs.length === 0 && !d.episode.requiresEscort && !fasting && (
+          <p className="mt-3">Tidak ada yang perlu disiapkan selain kartu identitas.</p>
+        )}
       </section>
 
       {!d.episode.urgent && (
@@ -134,7 +177,13 @@ export function PatientView({ d, zone, token, now }: { d: EpisodeDetail; zone: '
           <h2 id="ubah" className="text-2xl">
             Jadwal tidak cocok?
           </h2>
-          <ActionForm action={patientRescheduleAction} hidden={hidden} label="Minta ubah jadwal" tone="secondary" className="mt-3">
+          <ActionForm
+            action={patientRescheduleAction}
+            hidden={hidden}
+            label="Minta ubah jadwal"
+            tone="secondary"
+            className="mt-3"
+          >
             <label htmlFor="message" className="text-base font-semibold">
               Ceritakan singkat (opsional)
             </label>

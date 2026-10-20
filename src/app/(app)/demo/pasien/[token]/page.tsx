@@ -13,11 +13,15 @@ export const metadata = { title: 'Tampilan pasien', referrer: 'no-referrer' };
 export default async function DemoPatient({ params }: { params: Promise<{ token: string }> }) {
   const { token } = await params;
   const ctx = makeCtx('demo', SYSTEM_ACTOR);
-  const episodeId = await resolvePatientToken(ctx.db, token, Date.now());
+  const episodeId = await resolvePatientToken(ctx.db, token, ctx.clock.now());
   if (!episodeId) {
     return (
       <div className="container-page max-w-2xl py-12">
-        <Notice tone="clay" role="alert" title="Tautan demo ini sudah tidak berlaku (sandbox diperbarui berkala).">
+        <Notice
+          tone="clay"
+          role="alert"
+          title="Tautan demo ini sudah tidak berlaku (sandbox diperbarui berkala)."
+        >
           <a href={links.demo.start('1', { view: 'pasien', stage: 'tahan' })} className="text-teal underline">
             Buat contoh perjalanan pasien baru
           </a>
@@ -39,7 +43,7 @@ export default async function DemoPatient({ params }: { params: Promise<{ token:
           .
         </Notice>
       </div>
-      <PatientView d={d} zone="demo" token={token} now={Date.now()} />
+      <PatientView d={d} zone="demo" token={token} now={ctx.clock.now()} />
     </>
   );
 }

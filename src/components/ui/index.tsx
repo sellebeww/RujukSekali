@@ -5,7 +5,7 @@ type Tone = 'primary' | 'secondary' | 'ghost' | 'danger' | 'accent';
 
 const tones: Record<Tone, string> = {
   primary: 'bg-teal text-paper hover:bg-ink border-teal',
-  accent: 'bg-clay text-white hover:bg-[#93391f] border-clay',
+  accent: 'bg-clay text-white hover:bg-[#7d2f18] border-clay',
   secondary: 'bg-card text-ink hover:bg-paper-deep border-line',
   ghost: 'bg-transparent text-ink hover:bg-paper-deep border-transparent',
   danger: 'bg-card text-danger hover:bg-danger-soft border-danger/40',
@@ -14,7 +14,11 @@ const tones: Record<Tone, string> = {
 const base =
   'inline-flex items-center justify-center gap-2 rounded-full border px-5 py-2.5 text-[0.95rem] font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50 min-h-11';
 
-export function Button({ tone = 'primary', className = '', ...props }: ComponentProps<'button'> & { tone?: Tone }) {
+export function Button({
+  tone = 'primary',
+  className = '',
+  ...props
+}: ComponentProps<'button'> & { tone?: Tone }) {
   return <button {...props} className={`${base} ${tones[tone]} ${className}`} />;
 }
 
@@ -26,7 +30,13 @@ export function LinkButton({
 }: ComponentProps<typeof Link> & { tone?: Tone; external?: boolean }) {
   if (external) {
     const { href, ...rest } = props;
-    return <a {...(rest as ComponentProps<'a'>)} href={String(href)} className={`${base} ${tones[tone]} ${className}`} />;
+    return (
+      <a
+        {...(rest as ComponentProps<'a'>)}
+        href={String(href)}
+        className={`${base} ${tones[tone]} ${className}`}
+      />
+    );
   }
   return <Link {...props} className={`${base} ${tones[tone]} ${className}`} />;
 }
@@ -41,9 +51,19 @@ const badgeTones: Record<BadgeTone, string> = {
   neutral: 'bg-paper-deep text-ink-soft',
 };
 
-export function Badge({ tone = 'neutral', children, className = '' }: { tone?: BadgeTone; children: ReactNode; className?: string }) {
+export function Badge({
+  tone = 'neutral',
+  children,
+  className = '',
+}: {
+  tone?: BadgeTone;
+  children: ReactNode;
+  className?: string;
+}) {
   return (
-    <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-sm font-semibold ${badgeTones[tone]} ${className}`}>
+    <span
+      className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-sm font-semibold ${badgeTones[tone]} ${className}`}
+    >
       {children}
     </span>
   );
@@ -69,14 +89,25 @@ export function Notice({
     neutral: 'border-line',
   };
   return (
-    <div role={role} className={`rounded-lg border-l-4 ${border[tone]} ${badgeTones[tone]} px-4 py-3 text-[0.95rem]`}>
+    <div
+      role={role}
+      className={`rounded-lg border-l-4 ${border[tone]} ${badgeTones[tone]} px-4 py-3 text-[0.95rem]`}
+    >
       {title && <p className="font-semibold">{title}</p>}
       {children && <div className="text-ink">{children}</div>}
     </div>
   );
 }
 
-export function Card({ children, className = '', as: As = 'section' }: { children: ReactNode; className?: string; as?: 'section' | 'div' | 'article' | 'li' }) {
+export function Card({
+  children,
+  className = '',
+  as: As = 'section',
+}: {
+  children: ReactNode;
+  className?: string;
+  as?: 'section' | 'div' | 'article' | 'li';
+}) {
   return <As className={`ticket p-5 ${className}`}>{children}</As>;
 }
 
@@ -105,7 +136,17 @@ export function Field({
 export const inputClass =
   'w-full rounded-lg border border-line bg-card px-3 py-2.5 text-base text-ink placeholder:text-muted/70 focus:border-teal min-h-11';
 
-export function SectionTitle({ eyebrow, title, lead, id }: { eyebrow?: string; title: ReactNode; lead?: ReactNode; id?: string }) {
+export function SectionTitle({
+  eyebrow,
+  title,
+  lead,
+  id,
+}: {
+  eyebrow?: string;
+  title: ReactNode;
+  lead?: ReactNode;
+  id?: string;
+}) {
   return (
     <div className="max-w-3xl">
       {eyebrow && <p className="mb-2 text-sm font-semibold tracking-wide text-clay uppercase">{eyebrow}</p>}
@@ -119,7 +160,10 @@ export function SectionTitle({ eyebrow, title, lead, id }: { eyebrow?: string; t
 
 export function Placeholder({ children }: { children: ReactNode }) {
   return (
-    <span className="rounded bg-ochre-soft px-1.5 py-0.5 font-mono text-[0.85em] text-ochre" title="Konten belum tersedia">
+    <span
+      className="rounded bg-ochre-soft px-1.5 py-0.5 font-mono text-[0.85em] text-ochre"
+      title="Konten belum tersedia"
+    >
       {children}
     </span>
   );

@@ -67,6 +67,7 @@ export const links = {
     patient: (token: string) => onApp(`/demo/pasien/${token}`),
     inbox: () => onApp('/demo/inbox'),
     metrics: () => onApp('/demo/metrik'),
+    metricsCsv: () => onApp('/api/metrics.csv?zona=demo'),
     /** Creates a fresh copy of a scenario in the demo sandbox and redirects into it. */
     start: (
       scenario: DemoScenario,

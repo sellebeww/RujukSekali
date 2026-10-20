@@ -15,5 +15,5 @@ export default async function DemoEpisode({ params }: { params: Promise<{ id: st
   await expireDueHolds(ctx);
   const d = await loadEpisodeDetail(ctx.db, id);
   if (!d) notFound();
-  return <EpisodeView d={d} zone="demo" now={Date.now()} />;
+  return <EpisodeView d={d} zone="demo" now={ctx.clock.now()} />;
 }

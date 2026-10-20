@@ -10,10 +10,26 @@ export const serviceRulesSchema = z.object({
     .string()
     .regex(/^([01]\d|2[0-3]):[0-5]\d$/, 'Jam harus HH:MM')
     .or(z.literal('')),
-  resultReadyMin: z.coerce.number().int().min(0).max(24 * 60),
-  ttlSingkatMin: z.coerce.number().int().min(15).max(7 * 24 * 60),
-  ttlStandarMin: z.coerce.number().int().min(15).max(7 * 24 * 60),
-  ttlPanjangMin: z.coerce.number().int().min(15).max(7 * 24 * 60),
+  resultReadyMin: z.coerce
+    .number()
+    .int()
+    .min(0)
+    .max(24 * 60),
+  ttlSingkatMin: z.coerce
+    .number()
+    .int()
+    .min(15)
+    .max(7 * 24 * 60),
+  ttlStandarMin: z.coerce
+    .number()
+    .int()
+    .min(15)
+    .max(7 * 24 * 60),
+  ttlPanjangMin: z.coerce
+    .number()
+    .int()
+    .min(15)
+    .max(7 * 24 * 60),
   maxHoldRatioPct: z.coerce.number().min(0).max(100),
   maxExtensions: z.coerce.number().int().min(0).max(10),
 });
@@ -40,7 +56,10 @@ export async function updateServiceRules(ctx: Ctx, code: string, input: ServiceR
       entity: 'service_type',
       entityId: st.id,
       action: 'rules_updated',
-      data: { before: { ratio: st.maxHoldRatio, ttl: st.holdTtlMinutes, ext: st.maxExtensions }, after: { ratio: next.maxHoldRatio, ttl: next.holdTtlMinutes, ext: next.maxExtensions } },
+      data: {
+        before: { ratio: st.maxHoldRatio, ttl: st.holdTtlMinutes, ext: st.maxExtensions },
+        after: { ratio: next.maxHoldRatio, ttl: next.holdTtlMinutes, ext: next.maxExtensions },
+      },
     });
   });
 }
@@ -52,7 +71,13 @@ export async function setDayBlocked(ctx: Ctx, serviceTypeId: string, localDate: 
     const changed = await tx
       .update(slot)
       .set({ status: blocked ? 'blocked' : 'available' })
-      .where(and(eq(slot.serviceTypeId, serviceTypeId), eq(slot.localDate, localDate), eq(slot.status, blocked ? 'available' : 'blocked')))
+      .where(
+        and(
+          eq(slot.serviceTypeId, serviceTypeId),
+          eq(slot.localDate, localDate),
+          eq(slot.status, blocked ? 'available' : 'blocked'),
+        ),
+      )
       .returning({ id: slot.id });
     await audit(tx, ctx, {
       entity: 'capacity',

@@ -3,3 +3,4 @@ node_modules
 drizzle
 sim/out
 package-lock.json
+.next-e2e

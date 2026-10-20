@@ -26,9 +26,13 @@ export async function GET(req: NextRequest) {
   }
   const label = `Pasien Demo ${scenario}-${Math.random().toString(36).slice(2, 6).toUpperCase()}`;
   const { episodeId, token } = await runScenario(ctx, scenario, stage, label);
-  const target = new URL(view === 'pasien' ? links.demo.patient(token) : links.demo.episode(episodeId), req.url);
+  const target = new URL(
+    view === 'pasien' ? links.demo.patient(token) : links.demo.episode(episodeId),
+    req.url,
+  );
   const res = NextResponse.redirect(target, 303);
   const from = q.get('from');
-  if (from) res.cookies.set('rs_demo_from', safeReturnPath(from), { path: '/demo', sameSite: 'lax', httpOnly: true });
+  if (from)
+    res.cookies.set('rs_demo_from', safeReturnPath(from), { path: '/demo', sameSite: 'lax', httpOnly: true });
   return res;
 }

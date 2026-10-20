@@ -11,7 +11,8 @@ export function InboxView({ messages }: { messages: Msg[] }) {
       <h1 className="text-3xl sm:text-4xl">Notifikasi yang &ldquo;terkirim&rdquo;</h1>
       <div className="mt-4 max-w-3xl">
         <Notice tone="teal">
-          Tidak ada WhatsApp/SMS sungguhan. Isi pesan sengaja hanya memuat waktu, tempat, dan instruksi umum — tanpa nama layanan atau detail klinis.
+          Tidak ada WhatsApp/SMS sungguhan. Isi pesan sengaja hanya memuat waktu, tempat, dan instruksi umum —
+          tanpa nama layanan atau detail klinis.
         </Notice>
       </div>
       {messages.length === 0 ? (
@@ -22,7 +23,11 @@ export function InboxView({ messages }: { messages: Msg[] }) {
             <li key={m.id} className="ticket p-4" data-testid="inbox-message">
               <div className="flex flex-wrap items-center gap-2 text-sm">
                 <Badge tone={m.recipientRef.startsWith('pasien') ? 'teal' : 'clay'}>
-                  {m.recipientRef.startsWith('pasien') ? 'Ke pasien' : m.recipientRef === 'system_admin' ? 'Ke admin' : 'Ke koordinator'}
+                  {m.recipientRef.startsWith('pasien')
+                    ? 'Ke pasien'
+                    : m.recipientRef === 'system_admin'
+                      ? 'Ke admin'
+                      : 'Ke koordinator'}
                 </Badge>
                 <span className="text-muted">{formatLocalDateTime(m.createdAt.getTime())} WIB</span>
               </div>

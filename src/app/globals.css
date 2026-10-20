@@ -7,14 +7,14 @@
 
   --color-ink: #0f3532;
   --color-ink-soft: #3d5a57;
-  --color-muted: #5e6f6c;
+  --color-muted: #4f5f5c;
   --color-paper: #f7f2e8;
   --color-paper-deep: #efe7d6;
   --color-card: #fffdf8;
   --color-line: #d9cfbb;
   --color-teal: #0f5c57;
   --color-teal-soft: #d7e9e5;
-  --color-clay: #b4492a;
+  --color-clay: #9a3b1f;
   --color-clay-soft: #f6ddd2;
   --color-ochre: #8a5a00;
   --color-ochre-soft: #f7e6bf;
@@ -47,7 +47,9 @@
     font-family: var(--font-display);
     letter-spacing: -0.015em;
     line-height: 1.15;
-    font-variation-settings: 'SOFT' 50, 'WONK' 0;
+    font-variation-settings:
+      'SOFT' 50,
+      'WONK' 0;
   }
   a {
     text-underline-offset: 3px;

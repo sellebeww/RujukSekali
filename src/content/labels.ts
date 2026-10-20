@@ -19,7 +19,12 @@ export const DOC_LABEL = {
   expired: 'Tidak berlaku',
 } as const;
 
-export const DOC_TONE = { missing: 'danger', uploaded: 'ochre', verified: 'leaf', expired: 'danger' } as const;
+export const DOC_TONE = {
+  missing: 'danger',
+  uploaded: 'ochre',
+  verified: 'leaf',
+  expired: 'danger',
+} as const;
 
 export const AUDIT_LABEL: Record<string, string> = {
   created: 'Episode dibuat',
@@ -52,4 +57,8 @@ export const AUDIT_LABEL: Record<string, string> = {
   reschedule_requested: 'Pasien minta ubah jadwal',
 };
 
-export const TIER_LABEL = { singkat: 'Singkat (2 jam)', standar: 'Standar (24 jam)', panjang: 'Panjang (48 jam)' } as const;
+export const TIER_LABEL = {
+  singkat: 'Singkat (2 jam)',
+  standar: 'Standar (24 jam)',
+  panjang: 'Panjang (48 jam)',
+} as const;

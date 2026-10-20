@@ -59,10 +59,13 @@ export function SiteHeader({
           <Logo />
         </Link>
 
-        <nav aria-label="Navigasi utama" className="order-3 w-full lg:order-none lg:w-auto lg:flex-1">
-          <details className="group lg:hidden">
+        <nav aria-label="Navigasi utama" className="order-3 w-full xl:order-none xl:w-auto xl:flex-1">
+          <details className="group xl:hidden">
             <summary className={`${pill} cursor-pointer list-none border border-line bg-card`}>
-              Menu <span aria-hidden="true" className="ml-1 transition-transform group-open:rotate-180">▾</span>
+              Menu{' '}
+              <span aria-hidden="true" className="ml-1 transition-transform group-open:rotate-180">
+                ▾
+              </span>
             </summary>
             <ul className="mt-2 flex flex-col gap-1 pb-2">
               {[...nav, ...(variant === 'marketing' ? [] : profileNav)].map((n) => (
@@ -74,7 +77,7 @@ export function SiteHeader({
               ))}
             </ul>
           </details>
-          <ul className="hidden items-center gap-0.5 lg:flex">
+          <ul className="hidden items-center gap-0.5 xl:flex">
             {nav.map((n) => (
               <li key={n.href + n.label}>
                 <a href={n.href} className={`${pill} hover:bg-paper-deep`}>
@@ -87,7 +90,7 @@ export function SiteHeader({
 
         <div className="ml-auto flex items-center gap-1">
           {variant !== 'marketing' && (
-            <ul className="hidden items-center gap-1 lg:flex">
+            <ul className="hidden items-center gap-1 xl:flex">
               {profileNav.map((n) => (
                 <li key={n.label}>
                   <a href={n.href} rel={outRel} className={`${pill} text-ink-soft hover:bg-paper-deep`}>
@@ -100,7 +103,10 @@ export function SiteHeader({
           {variant === 'marketing' && (
             <>
               <SessionAwareCta className={`${pill} hover:bg-paper-deep`} />
-              <a href={withFrom(links.demo.home(), siteRoutes.home)} className={`${pill} bg-teal text-paper hover:bg-ink`}>
+              <a
+                href={withFrom(links.demo.home(), siteRoutes.home)}
+                className={`${pill} bg-teal text-paper hover:bg-ink`}
+              >
                 Coba Demo
               </a>
             </>

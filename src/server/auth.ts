@@ -33,14 +33,26 @@ const cookieBase = () => ({
   ...(process.env.COOKIE_DOMAIN ? { domain: process.env.COOKIE_DOMAIN } : {}),
 });
 
-export async function login(email: string, password: string): Promise<{ ok: true } | { ok: false; message: string }> {
+export async function login(
+  email: string,
+  password: string,
+): Promise<{ ok: true } | { ok: false; message: string }> {
   const db = getDb('app');
   const now = Date.now();
-  if (!(await hitRateLimit(db, `login:${await clientIp()}`, policy.rateLimits.login.limit, policy.rateLimits.login.windowSec, now))) {
+  if (
+    !(await hitRateLimit(
+      db,
+      `login:${await clientIp()}`,
+      policy.rateLimits.login.limit,
+      policy.rateLimits.login.windowSec,
+      now,
+    ))
+  ) {
     return { ok: false, message: 'Terlalu banyak percobaan. Coba lagi dalam beberapa menit.' };
   }
   const [u] = await db.select().from(appUser).where(eq(appUser.email, email.trim().toLowerCase()));
-  if (!u || !(await verifyPassword(password, u.passwordHash))) return { ok: false, message: 'Email atau kata sandi salah.' };
+  if (!u || !(await verifyPassword(password, u.passwordHash)))
+    return { ok: false, message: 'Email atau kata sandi salah.' };
   const token = randomToken();
   const expiresAt = new Date(now + policy.sessionTtlHours * HOUR);
   await db.insert(session).values({ idHash: sha256(token), userId: u.id, expiresAt });
@@ -54,7 +66,10 @@ export async function login(email: string, password: string): Promise<{ ok: true
 export async function logout() {
   const jar = await cookies();
   const token = jar.get(SESSION_COOKIE)?.value;
-  if (token) await getDb('app').delete(session).where(eq(session.idHash, sha256(token)));
+  if (token)
+    await getDb('app')
+      .delete(session)
+      .where(eq(session.idHash, sha256(token)));
   jar.delete({ name: SESSION_COOKIE, ...cookieBase() });
   jar.delete({ name: SIGNED_IN_HINT, ...cookieBase() });
 }

@@ -18,8 +18,19 @@ export function JourneyTimeline({
 }) {
   const stops: Stop[] = [];
   for (const t of plan.trips) {
-    stops.push({ kind: 'travel', label: `Berangkat · ${t.transportLabel}`, time: `${t.departLocal}–${t.arriveLocal}`, date: t.startDate });
-    const days = [...new Set(plan.visits.filter((v) => v.localDate >= t.startDate && v.localDate <= t.endDate).map((v) => v.localDate))].sort();
+    stops.push({
+      kind: 'travel',
+      label: `Berangkat · ${t.transportLabel}`,
+      time: `${t.departLocal}–${t.arriveLocal}`,
+      date: t.startDate,
+    });
+    const days = [
+      ...new Set(
+        plan.visits
+          .filter((v) => v.localDate >= t.startDate && v.localDate <= t.endDate)
+          .map((v) => v.localDate),
+      ),
+    ].sort();
     days.forEach((d, i) => {
       for (const v of plan.visits.filter((x) => x.localDate === d).sort((a, b) => a.startsAt - b.startsAt)) {
         stops.push({
@@ -35,12 +46,20 @@ export function JourneyTimeline({
         if (d !== t.endDate) stops.push({ kind: 'stay', label: 'Menginap di dekat rumah sakit', date: d });
       }
     });
-    stops.push({ kind: 'travel', label: 'Pulang', time: `${t.returnDepartLocal}–${t.returnArriveLocal}`, date: t.endDate });
+    stops.push({
+      kind: 'travel',
+      label: 'Pulang',
+      time: `${t.returnDepartLocal}–${t.returnArriveLocal}`,
+      date: t.endDate,
+    });
   }
 
   let lastDate = '';
   return (
-    <ol className="relative ml-2 border-l-[3px] border-dashed border-teal/40 pl-6" aria-label="Linimasa perjalanan">
+    <ol
+      className="relative ml-2 border-l-[3px] border-dashed border-teal/40 pl-6"
+      aria-label="Linimasa perjalanan"
+    >
       {stops.map((s, i) => {
         const showDate = s.date !== lastDate;
         lastDate = s.date;
@@ -52,8 +71,13 @@ export function JourneyTimeline({
               : 'bg-card border-teal';
         return (
           <li key={i} className="relative pb-4 last:pb-0">
-            <span aria-hidden="true" className={`absolute top-1.5 -left-[33px] h-4 w-4 rounded-full border-[3px] ${dot}`} />
-            {showDate && <p className="text-sm font-bold tracking-wide text-clay uppercase">{formatLocalDate(s.date)}</p>}
+            <span
+              aria-hidden="true"
+              className={`absolute top-1.5 -left-[33px] h-4 w-4 rounded-full border-[3px] ${dot}`}
+            />
+            {showDate && (
+              <p className="text-sm font-bold tracking-wide text-clay uppercase">{formatLocalDate(s.date)}</p>
+            )}
             <p className={s.kind === 'visit' ? 'font-semibold' : 'text-ink-soft'}>
               {'time' in s && <span className="mr-2 font-mono text-[0.95rem] tabular-nums">{s.time}</span>}
               {s.label}

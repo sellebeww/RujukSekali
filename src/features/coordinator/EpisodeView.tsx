@@ -25,14 +25,30 @@ import { zonePaths, type Zone } from './paths';
 
 type Plan = EpisodeDetail['plans'][number];
 
-function PlanTicket({ plan, zone, now, detail, recommended }: { plan: Plan; zone: Zone; now: number; detail: EpisodeDetail; recommended: boolean }) {
+function PlanTicket({
+  plan,
+  zone,
+  now,
+  detail,
+  recommended,
+}: {
+  plan: Plan;
+  zone: Zone;
+  now: number;
+  detail: EpisodeDetail;
+  recommended: boolean;
+}) {
   const places = Object.fromEntries(plan.visits.map((v) => [v.v.slotId, v.location]));
   const z = { zone, planId: plan.id };
   const c = plan.detail.cost;
   const isHeld = plan.status === 'HELD';
   const maxExt = Math.min(...detail.services.map((s) => s.maxExtensions));
   return (
-    <article className="ticket overflow-hidden" data-testid={`plan-${plan.status}`} aria-labelledby={`plan-${plan.id}`}>
+    <article
+      className="ticket overflow-hidden"
+      data-testid={`plan-${plan.status}`}
+      aria-labelledby={`plan-${plan.id}`}
+    >
       <div className="flex flex-wrap items-center gap-2 px-5 pt-5">
         <h3 id={`plan-${plan.id}`} className="font-sans text-base font-bold">
           Opsi {plan.rank}
@@ -55,9 +71,9 @@ function PlanTicket({ plan, zone, now, detail, recommended }: { plan: Plan; zone
         </p>
         {isHeld && plan.hold && (
           <p className="mt-1 rounded-lg bg-ochre-soft px-3 py-2 text-[0.95rem]">
-            Jadwal ditahan sementara · berakhir <Countdown until={plan.hold.expiresAt.getTime()} now={now} /> (
-            {formatLocalDateTime(plan.hold.expiresAt.getTime())} WIB) ·
-            diperpanjang {plan.hold.extensionsCount}/{maxExt} kali
+            Jadwal ditahan sementara · berakhir <Countdown until={plan.hold.expiresAt.getTime()} now={now} />{' '}
+            ({formatLocalDateTime(plan.hold.expiresAt.getTime())} WIB) · diperpanjang{' '}
+            {plan.hold.extensionsCount}/{maxExt} kali
           </p>
         )}
       </div>
@@ -65,7 +81,9 @@ function PlanTicket({ plan, zone, now, detail, recommended }: { plan: Plan; zone
       <div className="grid gap-5 px-5 py-5 md:grid-cols-2">
         <JourneyTimeline plan={plan.detail} places={places} />
         <div>
-          <h4 className="font-sans text-sm font-bold tracking-wide text-muted uppercase">Mengapa rencana ini</h4>
+          <h4 className="font-sans text-sm font-bold tracking-wide text-muted uppercase">
+            Mengapa rencana ini
+          </h4>
           <ul className="mt-2 space-y-1.5 text-[0.95rem]">
             {plan.detail.explanation.map((e, i) => (
               <li key={i} className="flex gap-2">
@@ -83,20 +101,51 @@ function PlanTicket({ plan, zone, now, detail, recommended }: { plan: Plan; zone
           {plan.status === 'PROPOSED' && (
             <>
               <ActionForm action={holdAction} hidden={z} label="Tahan jadwal ini" />
-              <ActionForm action={releaseAction} hidden={z} label="Buang opsi" tone="secondary" reason={{ label: 'Alasan', placeholder: 'mis. tidak cocok untuk pasien' }} />
+              <ActionForm
+                action={releaseAction}
+                hidden={z}
+                label="Buang opsi"
+                tone="secondary"
+                reason={{ label: 'Alasan', placeholder: 'mis. tidak cocok untuk pasien' }}
+              />
             </>
           )}
           {isHeld && (
             <>
-              {!plan.approvedAt && <ActionForm action={approveAction} hidden={z} label="Setujui rencana" tone="accent" />}
-              <ActionForm action={extendAction} hidden={z} label="Perpanjang penahanan" tone="secondary" reason={{ label: 'Alasan perpanjangan', placeholder: 'mis. rujukan sedang diurus' }} />
-              <ActionForm action={releaseAction} hidden={z} label="Lepas jadwal" tone="danger" reason={{ label: 'Alasan melepas', placeholder: 'mis. pasien minta tanggal lain' }} />
+              {!plan.approvedAt && (
+                <ActionForm action={approveAction} hidden={z} label="Setujui rencana" tone="accent" />
+              )}
+              <ActionForm
+                action={extendAction}
+                hidden={z}
+                label="Perpanjang penahanan"
+                tone="secondary"
+                reason={{ label: 'Alasan perpanjangan', placeholder: 'mis. rujukan sedang diurus' }}
+              />
+              <ActionForm
+                action={releaseAction}
+                hidden={z}
+                label="Lepas jadwal"
+                tone="danger"
+                reason={{ label: 'Alasan melepas', placeholder: 'mis. pasien minta tanggal lain' }}
+              />
             </>
           )}
           {plan.status === 'CONFIRMED' && (
             <>
-              <ActionForm action={completeAction} hidden={z} label="Tandai kunjungan selesai" tone="secondary" />
-              <ActionForm action={cancelAction} hidden={z} label="Batalkan jadwal" tone="danger" reason={{ label: 'Alasan pembatalan' }} />
+              <ActionForm
+                action={completeAction}
+                hidden={z}
+                label="Tandai kunjungan selesai"
+                tone="secondary"
+              />
+              <ActionForm
+                action={cancelAction}
+                hidden={z}
+                label="Batalkan jadwal"
+                tone="danger"
+                reason={{ label: 'Alasan pembatalan' }}
+              />
             </>
           )}
         </div>
@@ -132,7 +181,9 @@ export function EpisodeView({ d, zone, now }: { d: EpisodeDetail; zone: Zone; no
         </div>
         <div className="flex flex-wrap gap-2">
           <Badge tone={ep.priority === 'segera' ? 'clay' : 'neutral'}>Prioritas: {ep.priority}</Badge>
-          <Badge>Jendela {formatLocalDate(ep.earliestDate)} – {formatLocalDate(ep.latestDate)}</Badge>
+          <Badge>
+            Jendela {formatLocalDate(ep.earliestDate)} – {formatLocalDate(ep.latestDate)}
+          </Badge>
           <Badge>Penahanan: {TIER_LABEL[ep.holdTier]}</Badge>
           {d.services.map((s) => (
             <Badge key={s.id} tone="teal">
@@ -145,8 +196,8 @@ export function EpisodeView({ d, zone, now }: { d: EpisodeDetail; zone: Zone; no
       {ep.urgent && (
         <div className="mt-5">
           <Notice tone="danger" role="alert" title="MENDESAK — tangani di luar sistem">
-            Episode ini ditandai mendesak. Sistem tidak menyusun atau menahan jadwal otomatis. Hubungi tenaga kesehatan dan arahkan pasien
-            sesuai prosedur rumah sakit; kondisi darurat → IGD.
+            Episode ini ditandai mendesak. Sistem tidak menyusun atau menahan jadwal otomatis. Hubungi tenaga
+            kesehatan dan arahkan pasien sesuai prosedur rumah sakit; kondisi darurat → IGD.
           </Notice>
         </div>
       )}
@@ -158,12 +209,24 @@ export function EpisodeView({ d, zone, now }: { d: EpisodeDetail; zone: Zone; no
               Rencana perjalanan
             </h2>
             {!active && !ep.urgent && !ep.closedAt && (
-              <ActionForm action={proposeAction} hidden={z} label={proposed.length ? 'Susun ulang opsi' : 'Susun rencana'} tone="secondary" />
+              <ActionForm
+                action={proposeAction}
+                hidden={z}
+                label={proposed.length ? 'Susun ulang opsi' : 'Susun rencana'}
+                tone="secondary"
+              />
             )}
           </div>
 
           {planning && (planning.notes.length > 0 || planning.rejections.length > 0) && !active && (
-            <Notice tone={planning.rejections.length ? 'clay' : 'teal'} title={planning.rejections.length ? 'Belum ada rencana yang memenuhi semua syarat' : 'Catatan mesin penyusun'}>
+            <Notice
+              tone={planning.rejections.length ? 'clay' : 'teal'}
+              title={
+                planning.rejections.length
+                  ? 'Belum ada rencana yang memenuhi semua syarat'
+                  : 'Catatan mesin penyusun'
+              }
+            >
               <ul className="mt-1 list-disc pl-5">
                 {[...planning.rejections.map((r) => r.message), ...planning.notes].map((m, i) => (
                   <li key={i}>{m}</li>
@@ -178,16 +241,25 @@ export function EpisodeView({ d, zone, now }: { d: EpisodeDetail; zone: Zone; no
               {active.status === 'HELD' && d.impact.length > 0 && (
                 <Card>
                   <h3 className="font-sans text-base font-bold">Dampak penahanan pada kapasitas bersama</h3>
-                  <p className="text-sm text-muted">Batas penahanan menjaga agar pasien lain tetap mendapat jadwal.</p>
+                  <p className="text-sm text-muted">
+                    Batas penahanan menjaga agar pasien lain tetap mendapat jadwal.
+                  </p>
                   <ul className="mt-3 space-y-3">
                     {d.impact.map((i) => (
                       <li key={i.serviceTypeId + i.localDate}>
                         <p className="text-[0.95rem]">
-                          <strong>{i.name}</strong>, {formatLocalDate(i.localDate)}: {i.held} dari batas {i.allowed} slot ditahan · {i.available} slot
-                          masih kosong
+                          <strong>{i.name}</strong>, {formatLocalDate(i.localDate)}: {i.held} dari batas{' '}
+                          {i.allowed} slot ditahan · {i.available} slot masih kosong
                         </p>
-                        <div className="mt-1 h-2.5 overflow-hidden rounded-full bg-paper-deep" role="img" aria-label={`${i.held} dari ${i.allowed} batas penahanan terpakai`}>
-                          <div className="h-full bg-ochre" style={{ width: `${Math.min(100, (i.held / Math.max(1, i.allowed)) * 100)}%` }} />
+                        <div
+                          className="mt-1 h-2.5 overflow-hidden rounded-full bg-paper-deep"
+                          role="img"
+                          aria-label={`${i.held} dari ${i.allowed} batas penahanan terpakai`}
+                        >
+                          <div
+                            className="h-full bg-ochre"
+                            style={{ width: `${Math.min(100, (i.held / Math.max(1, i.allowed)) * 100)}%` }}
+                          />
                         </div>
                       </li>
                     ))}
@@ -197,15 +269,22 @@ export function EpisodeView({ d, zone, now }: { d: EpisodeDetail; zone: Zone; no
             </>
           )}
 
-          {!active && proposed.map((p, i) => <PlanTicket key={p.id} plan={p} zone={zone} now={now} detail={d} recommended={i === 0} />)}
+          {!active &&
+            proposed.map((p, i) => (
+              <PlanTicket key={p.id} plan={p} zone={zone} now={now} detail={d} recommended={i === 0} />
+            ))}
 
           {!active && proposed.length === 0 && !ep.urgent && !planning && (
-            <p className="text-ink-soft">Belum ada opsi. Tekan &ldquo;Susun rencana&rdquo; untuk meminta mesin menyusun hingga 3 opsi.</p>
+            <p className="text-ink-soft">
+              Belum ada opsi. Tekan &ldquo;Susun rencana&rdquo; untuk meminta mesin menyusun hingga 3 opsi.
+            </p>
           )}
 
           {past.length > 0 && (
             <details className="ticket p-4">
-              <summary className="cursor-pointer font-semibold">Riwayat rencana sebelumnya ({past.length})</summary>
+              <summary className="cursor-pointer font-semibold">
+                Riwayat rencana sebelumnya ({past.length})
+              </summary>
               <ul className="mt-3 space-y-2 text-[0.95rem]">
                 {past.map((p) => (
                   <li key={p.id} className="flex flex-wrap gap-2">
@@ -231,16 +310,32 @@ export function EpisodeView({ d, zone, now }: { d: EpisodeDetail; zone: Zone; no
                     <span className="font-semibold">{doc.label}</span>
                     <Badge tone={DOC_TONE[doc.status]}>{DOC_LABEL[doc.status]}</Badge>
                   </div>
-                  {doc.validUntil && <p className="text-sm text-muted">Berlaku sampai {formatLocalDate(doc.validUntil)}</p>}
+                  {doc.validUntil && (
+                    <p className="text-sm text-muted">Berlaku sampai {formatLocalDate(doc.validUntil)}</p>
+                  )}
                   <div className="mt-2 flex flex-wrap gap-2">
                     {doc.status === 'uploaded' && (
                       <>
-                        <ActionForm action={docAction} hidden={{ zone, documentId: doc.id, op: 'verify' }} label="Verifikasi" />
-                        <ActionForm action={docAction} hidden={{ zone, documentId: doc.id, op: 'reject' }} label="Kembalikan" tone="secondary" />
+                        <ActionForm
+                          action={docAction}
+                          hidden={{ zone, documentId: doc.id, op: 'verify' }}
+                          label="Verifikasi"
+                        />
+                        <ActionForm
+                          action={docAction}
+                          hidden={{ zone, documentId: doc.id, op: 'reject' }}
+                          label="Kembalikan"
+                          tone="secondary"
+                        />
                       </>
                     )}
                     {(doc.status === 'missing' || doc.status === 'expired') && (
-                      <ActionForm action={docAction} hidden={{ zone, documentId: doc.id, op: 'upload' }} label="Catat diterima di loket" tone="secondary" />
+                      <ActionForm
+                        action={docAction}
+                        hidden={{ zone, documentId: doc.id, op: 'upload' }}
+                        label="Catat diterima di loket"
+                        tone="secondary"
+                      />
                     )}
                     {doc.status === 'verified' && (
                       <ActionForm
@@ -256,7 +351,9 @@ export function EpisodeView({ d, zone, now }: { d: EpisodeDetail; zone: Zone; no
               ))}
             </ul>
 
-            <h3 className="mt-5 font-sans text-sm font-bold tracking-wide text-muted uppercase">Pendamping</h3>
+            <h3 className="mt-5 font-sans text-sm font-bold tracking-wide text-muted uppercase">
+              Pendamping
+            </h3>
             {ep.requiresEscort ? (
               d.escort ? (
                 <div className="mt-2 text-[0.95rem]">
@@ -270,15 +367,33 @@ export function EpisodeView({ d, zone, now }: { d: EpisodeDetail; zone: Zone; no
                         return (
                           <li key={day} className="flex justify-between gap-2">
                             <span>{formatLocalDate(day)}</span>
-                            <Badge tone={a?.status === 'confirmed' ? 'leaf' : a?.status === 'cancelled' ? 'danger' : 'ochre'}>
-                              {a?.status === 'confirmed' ? 'Terkonfirmasi' : a?.status === 'cancelled' ? 'Batal' : 'Belum konfirmasi'}
+                            <Badge
+                              tone={
+                                a?.status === 'confirmed'
+                                  ? 'leaf'
+                                  : a?.status === 'cancelled'
+                                    ? 'danger'
+                                    : 'ochre'
+                              }
+                            >
+                              {a?.status === 'confirmed'
+                                ? 'Terkonfirmasi'
+                                : a?.status === 'cancelled'
+                                  ? 'Batal'
+                                  : 'Belum konfirmasi'}
                             </Badge>
                           </li>
                         );
                       })}
                     </ul>
                   ) : (
-                    <p className="text-muted">Tersedia: {d.escortDays.filter((x) => x.status !== 'cancelled').map((x) => formatLocalDate(x.localDate)).join(', ') || '—'}</p>
+                    <p className="text-muted">
+                      Tersedia:{' '}
+                      {d.escortDays
+                        .filter((x) => x.status !== 'cancelled')
+                        .map((x) => formatLocalDate(x.localDate))
+                        .join(', ') || '—'}
+                    </p>
                   )}
                 </div>
               ) : (
@@ -288,29 +403,48 @@ export function EpisodeView({ d, zone, now }: { d: EpisodeDetail; zone: Zone; no
               <p className="mt-1 text-[0.95rem] text-muted">Tidak diperlukan.</p>
             )}
 
-            <h3 className="mt-5 font-sans text-sm font-bold tracking-wide text-muted uppercase">Transportasi</h3>
+            <h3 className="mt-5 font-sans text-sm font-bold tracking-wide text-muted uppercase">
+              Transportasi
+            </h3>
             {active ? (
               <ul className="mt-1 text-[0.95rem]">
                 {active.detail.trips.map((t) => (
                   <li key={t.startDate}>
-                    {t.transportLabel}: {t.departLocal} → tiba {t.arriveLocal}; pulang {t.returnDepartLocal} <Badge tone="leaf">Feasible</Badge>
+                    {t.transportLabel}: {t.departLocal} → tiba {t.arriveLocal}; pulang {t.returnDepartLocal}{' '}
+                    <Badge tone="leaf">Feasible</Badge>
                   </li>
                 ))}
               </ul>
             ) : (
-              <p className="mt-1 text-[0.95rem] text-muted">Diperiksa saat rencana disusun (jadwal statis + estimasi tarif).</p>
+              <p className="mt-1 text-[0.95rem] text-muted">
+                Diperiksa saat rencana disusun (jadwal statis + estimasi tarif).
+              </p>
             )}
 
-            <h3 className="mt-5 font-sans text-sm font-bold tracking-wide text-muted uppercase">Persetujuan koordinator</h3>
+            <h3 className="mt-5 font-sans text-sm font-bold tracking-wide text-muted uppercase">
+              Persetujuan koordinator
+            </h3>
             <p className="mt-1 text-[0.95rem]">{active?.approvedAt ? 'Sudah disetujui' : 'Belum'}</p>
           </Card>
 
           <Card>
             <h2 className="font-sans text-lg font-bold">Tautan untuk pasien</h2>
-            <p className="text-sm text-muted">Tanpa password. Berlaku 72 jam, bisa dicabut. Tautan hanya tampil sekali.</p>
+            <p className="text-sm text-muted">
+              Tanpa password. Berlaku 72 jam, bisa dicabut. Tautan hanya tampil sekali.
+            </p>
             <div className="mt-3 flex flex-col gap-2">
-              <ActionForm action={patientLinkAction} hidden={{ ...z, op: 'issue' }} label="Buat tautan pasien" tone="secondary" />
-              <ActionForm action={patientLinkAction} hidden={{ ...z, op: 'revoke' }} label="Cabut semua tautan" tone="danger" />
+              <ActionForm
+                action={patientLinkAction}
+                hidden={{ ...z, op: 'issue' }}
+                label="Buat tautan pasien"
+                tone="secondary"
+              />
+              <ActionForm
+                action={patientLinkAction}
+                hidden={{ ...z, op: 'revoke' }}
+                label="Cabut semua tautan"
+                tone="danger"
+              />
             </div>
           </Card>
 
@@ -323,7 +457,12 @@ export function EpisodeView({ d, zone, now }: { d: EpisodeDetail; zone: Zone; no
                   .map((r) => (
                     <li key={r.id}>
                       <p className="text-[0.95rem]">Minta ubah jadwal{r.message ? `: “${r.message}”` : ''}</p>
-                      <ActionForm action={resolveRequestAction} hidden={{ zone, requestId: r.id }} label="Tandai ditangani" tone="secondary" />
+                      <ActionForm
+                        action={resolveRequestAction}
+                        hidden={{ zone, requestId: r.id }}
+                        label="Tandai ditangani"
+                        tone="secondary"
+                      />
                     </li>
                   ))}
               </ul>
@@ -333,17 +472,31 @@ export function EpisodeView({ d, zone, now }: { d: EpisodeDetail; zone: Zone; no
           {!ep.closedAt && (
             <Card>
               <h2 className="font-sans text-lg font-bold">Perubahan prioritas klinis</h2>
-              <p className="text-sm text-muted">Diisi oleh tenaga kesehatan/koordinator. Semua jadwal yang ditahan akan dilepas, lalu disusun ulang.</p>
-              <ActionForm action={priorityAction} hidden={z} label="Simpan perubahan" tone="secondary" reason={{ label: 'Alasan (dari tenaga kesehatan)' }}>
+              <p className="text-sm text-muted">
+                Diisi oleh tenaga kesehatan/koordinator. Semua jadwal yang ditahan akan dilepas, lalu disusun
+                ulang.
+              </p>
+              <ActionForm
+                action={priorityAction}
+                hidden={z}
+                label="Simpan perubahan"
+                tone="secondary"
+                reason={{ label: 'Alasan (dari tenaga kesehatan)' }}
+              >
                 <label className="mt-2 flex flex-col gap-1 text-sm font-semibold">
                   Prioritas
-                  <select name="priority" defaultValue={ep.priority} className="min-h-11 rounded-lg border border-line bg-card px-3">
+                  <select
+                    name="priority"
+                    defaultValue={ep.priority}
+                    className="min-h-11 rounded-lg border border-line bg-card px-3"
+                  >
                     <option value="rutin">Rutin</option>
                     <option value="segera">Segera</option>
                   </select>
                 </label>
                 <label className="flex items-center gap-2 text-sm font-semibold">
-                  <input type="checkbox" name="urgent" defaultChecked={ep.urgent} className="h-5 w-5" /> Tandai mendesak (keluar dari alur otomatis)
+                  <input type="checkbox" name="urgent" defaultChecked={ep.urgent} className="h-5 w-5" />{' '}
+                  Tandai mendesak (keluar dari alur otomatis)
                 </label>
               </ActionForm>
             </Card>
@@ -362,7 +515,10 @@ export function EpisodeView({ d, zone, now }: { d: EpisodeDetail; zone: Zone; no
                 </li>
               ))}
             </ol>
-            <a href={zone === 'demo' ? links.demo.inbox() : links.app.inbox()} className="mt-3 inline-block text-sm text-teal underline">
+            <a
+              href={zone === 'demo' ? links.demo.inbox() : links.app.inbox()}
+              className="mt-3 inline-block text-sm text-teal underline"
+            >
               Lihat notifikasi (kotak masuk simulasi)
             </a>
           </Card>

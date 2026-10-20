@@ -308,15 +308,13 @@ export async function confirmEscortDays(ctx: Ctx, episodeId: string) {
         .where(and(eq(escortAvailability.escortId, e.id), eq(escortAvailability.localDate, d)))
         .returning({ id: escortAvailability.id });
       if (updated.length === 0) {
-        await tx
-          .insert(escortAvailability)
-          .values({
-            escortId: e.id,
-            localDate: d,
-            fromLocal: '05:00',
-            toLocal: '20:00',
-            status: 'confirmed',
-          });
+        await tx.insert(escortAvailability).values({
+          escortId: e.id,
+          localDate: d,
+          fromLocal: '05:00',
+          toLocal: '20:00',
+          status: 'confirmed',
+        });
       }
     }
     await audit(tx, ctx, {
@@ -406,14 +404,12 @@ export async function requestReschedule(ctx: Ctx, episodeId: string, message: st
     );
   }
   await ctx.db.transaction(async (tx) => {
-    await tx
-      .insert(patientRequest)
-      .values({
-        episodeId,
-        kind: 'ubah_jadwal',
-        message: text || null,
-        createdAt: new Date(ctx.clock.now()),
-      });
+    await tx.insert(patientRequest).values({
+      episodeId,
+      kind: 'ubah_jadwal',
+      message: text || null,
+      createdAt: new Date(ctx.clock.now()),
+    });
     const [row] = await tx
       .select({ p: patient.pseudonym })
       .from(episode)

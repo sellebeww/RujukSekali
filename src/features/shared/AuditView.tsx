@@ -8,7 +8,8 @@ export function AuditView({ rows }: { rows: (typeof auditLog.$inferSelect)[] }) 
       <p className="text-sm font-semibold tracking-wide text-clay uppercase">Audit log</p>
       <h1 className="text-3xl sm:text-4xl">Siapa, kapan, apa, dan mengapa</h1>
       <p className="mt-2 max-w-3xl text-ink-soft">
-        Catatan ini hanya bisa ditambah, tidak bisa diubah atau dihapus (dijaga di level database). Tidak memuat data pribadi atau klinis.
+        Catatan ini hanya bisa ditambah, tidak bisa diubah atau dihapus (dijaga di level database). Tidak
+        memuat data pribadi atau klinis.
       </p>
       <div className="ticket mt-6 overflow-x-auto">
         <table className="w-full min-w-[44rem] text-left text-[0.95rem]">
@@ -30,7 +31,9 @@ export function AuditView({ rows }: { rows: (typeof auditLog.$inferSelect)[] }) 
                 <td className="px-3 py-2">
                   {AUDIT_LABEL[r.action] ?? r.action} <span className="text-sm text-muted">({r.entity})</span>
                 </td>
-                <td className="px-3 py-2 font-mono text-sm">{r.fromState || r.toState ? `${r.fromState ?? '—'} → ${r.toState ?? '—'}` : ''}</td>
+                <td className="px-3 py-2 font-mono text-sm">
+                  {r.fromState || r.toState ? `${r.fromState ?? '—'} → ${r.toState ?? '—'}` : ''}
+                </td>
                 <td className="px-3 py-2">{r.reason}</td>
               </tr>
             ))}

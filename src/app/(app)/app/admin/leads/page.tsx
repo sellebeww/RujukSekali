@@ -17,7 +17,10 @@ export default async function Leads() {
       <p className="text-sm font-semibold tracking-wide text-clay uppercase">Admin sistem</p>
       <h1 className="text-3xl sm:text-4xl">Permintaan demo &amp; pilot</h1>
       <div className="mt-4 max-w-3xl">
-        <Notice tone="teal">Data kontak calon mitra disimpan terpisah dari data operasional pasien dan hanya dipakai untuk tindak lanjut.</Notice>
+        <Notice tone="teal">
+          Data kontak calon mitra disimpan terpisah dari data operasional pasien dan hanya dipakai untuk
+          tindak lanjut.
+        </Notice>
       </div>
       {leads.length === 0 ? (
         <p className="mt-6 text-ink-soft">Belum ada permintaan.</p>
@@ -36,12 +39,19 @@ export default async function Leads() {
                 </p>
                 <p className="mt-1 text-ink-soft">{l.need}</p>
                 <p className="mt-1 text-sm text-muted">
-                  Persetujuan dicatat {formatLocalDateTime(l.consentAt.getTime())} (teks {l.consentTextVersion})
+                  Persetujuan dicatat {formatLocalDateTime(l.consentAt.getTime())} (teks{' '}
+                  {l.consentTextVersion})
                 </p>
               </div>
               <div className="flex flex-wrap items-start gap-2">
                 {(['dihubungi', 'selesai', 'ditolak'] as const).map((s) => (
-                  <ActionForm key={s} action={leadStatusAction} hidden={{ leadId: l.id, status: s }} label={`Tandai ${s}`} tone="secondary" />
+                  <ActionForm
+                    key={s}
+                    action={leadStatusAction}
+                    hidden={{ leadId: l.id, status: s }}
+                    label={`Tandai ${s}`}
+                    tone="secondary"
+                  />
                 ))}
               </div>
             </li>

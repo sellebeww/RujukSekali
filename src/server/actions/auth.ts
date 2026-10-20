@@ -6,7 +6,10 @@ import { links } from '@/config/links';
 import { login } from '../auth';
 import type { ActionState } from './ctx';
 
-const schema = z.object({ email: z.string().email('Email tidak valid'), password: z.string().min(1, 'Isi kata sandi') });
+const schema = z.object({
+  email: z.string().email('Email tidak valid'),
+  password: z.string().min(1, 'Isi kata sandi'),
+});
 
 export async function loginAction(_: ActionState, fd: FormData): Promise<ActionState> {
   const parsed = schema.safeParse({ email: fd.get('email'), password: fd.get('password') });

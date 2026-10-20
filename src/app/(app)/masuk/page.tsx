@@ -17,7 +17,10 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
         <div>
           <p className="text-sm font-semibold tracking-wide text-clay uppercase">Zona kerja</p>
           <h1 className="text-4xl">Masuk untuk koordinator dan admin</h1>
-          <p className="mt-3 text-lg text-ink-soft">Akun hanya untuk petugas rumah sakit. Pasien tidak perlu akun — mereka menerima tautan dari petugas.</p>
+          <p className="mt-3 text-lg text-ink-soft">
+            Akun hanya untuk petugas rumah sakit. Pasien tidak perlu akun — mereka menerima tautan dari
+            petugas.
+          </p>
           <p className="mt-6">
             Ingin melihat dulu?{' '}
             <a href={links.demo.home()} className="font-semibold text-teal underline">
@@ -37,10 +40,24 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
         <div className="ticket p-6">
           <ActionForm action={loginAction} hidden={{ next: next ?? '' }} label="Masuk">
             <Field label="Email" htmlFor="email">
-              <input id="email" name="email" type="email" autoComplete="username" required className={inputClass} />
+              <input
+                id="email"
+                name="email"
+                type="email"
+                autoComplete="username"
+                required
+                className={inputClass}
+              />
             </Field>
             <Field label="Kata sandi" htmlFor="password">
-              <input id="password" name="password" type="password" autoComplete="current-password" required className={inputClass} />
+              <input
+                id="password"
+                name="password"
+                type="password"
+                autoComplete="current-password"
+                required
+                className={inputClass}
+              />
             </Field>
           </ActionForm>
         </div>

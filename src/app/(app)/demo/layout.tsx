@@ -6,7 +6,10 @@ import { SiteHeader } from '@/components/SiteHeader';
 import { links } from '@/config/links';
 import { ensureDemoFresh } from '@/server/demo';
 
-export const metadata: Metadata = { title: { default: 'Mode demo', template: '%s · Mode demo' }, robots: { index: false } };
+export const metadata: Metadata = {
+  title: { default: 'Mode demo', template: '%s · Mode demo' },
+  robots: { index: false },
+};
 export const dynamic = 'force-dynamic';
 
 export default async function DemoLayout({ children }: { children: React.ReactNode }) {

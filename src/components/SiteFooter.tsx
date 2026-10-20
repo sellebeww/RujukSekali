@@ -38,8 +38,9 @@ export function SiteFooter({ noReferrer = false }: { noReferrer?: boolean }) {
           <Logo />
           <p className="mt-3 text-[0.95rem] text-ink-soft">{brand.tagline}</p>
           <p className="mt-4 text-sm text-muted">
-            {brand.name} mengoordinasikan jadwal dan logistik kunjungan. Sistem ini <strong>tidak menggantikan penilaian
-            klinis</strong>. Dalam keadaan darurat, segera ke IGD terdekat atau hubungi layanan gawat darurat 119.
+            {brand.name} mengoordinasikan jadwal dan logistik kunjungan. Sistem ini{' '}
+            <strong>tidak menggantikan penilaian klinis</strong>. Dalam keadaan darurat, segera ke IGD
+            terdekat atau hubungi layanan gawat darurat 119.
           </p>
         </div>
         {cols.map((c) => (
@@ -59,7 +60,8 @@ export function SiteFooter({ noReferrer = false }: { noReferrer?: boolean }) {
       </div>
       <div className="border-t border-line">
         <p className="container-page py-4 text-sm text-muted">
-          © {new Date().getUTCFullYear()} {brand.legalEntity}. Semua data pasien dalam demo adalah data sintetis.
+          © {new Date().getUTCFullYear()} {brand.legalEntity}. Semua data pasien dalam demo adalah data
+          sintetis.
         </p>
       </div>
     </footer>

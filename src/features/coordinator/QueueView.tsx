@@ -17,11 +17,24 @@ const TONE: Record<QueueCategory, 'danger' | 'clay' | 'ochre' | 'teal' | 'neutra
   selesai: 'neutral',
 };
 
-export function QueueView({ items, zone, now, filter }: { items: QueueItem[]; zone: Zone; now: number; filter?: string }) {
+export function QueueView({
+  items,
+  zone,
+  now,
+  filter,
+}: {
+  items: QueueItem[];
+  zone: Zone;
+  now: number;
+  filter?: string;
+}) {
   const paths = zonePaths(zone);
   const open = items.filter((i) => i.category !== 'selesai');
   const counts = Object.fromEntries(
-    (Object.keys(QUEUE_LABEL) as QueueCategory[]).map((c) => [c, items.filter((i) => i.category === c).length]),
+    (Object.keys(QUEUE_LABEL) as QueueCategory[]).map((c) => [
+      c,
+      items.filter((i) => i.category === c).length,
+    ]),
   ) as Record<QueueCategory, number>;
   const shown = filter && filter in QUEUE_LABEL ? items.filter((i) => i.category === filter) : open;
   const needAction = open.filter((i) => !['terkonfirmasi'].includes(i.category)).length;
@@ -32,7 +45,9 @@ export function QueueView({ items, zone, now, filter }: { items: QueueItem[]; zo
         <div>
           <p className="text-sm font-semibold tracking-wide text-clay uppercase">Antrean tindakan</p>
           <h1 className="text-3xl sm:text-4xl">{needAction} perjalanan pasien butuh tindakan</h1>
-          <p className="mt-1 text-ink-soft">Urutan: kasus mendesak, perlu disusun ulang, lalu jadwal ditahan yang paling cepat berakhir.</p>
+          <p className="mt-1 text-ink-soft">
+            Urutan: kasus mendesak, perlu disusun ulang, lalu jadwal ditahan yang paling cepat berakhir.
+          </p>
         </div>
         <LinkButton href={paths.newEpisode}>+ Episode baru</LinkButton>
       </div>
@@ -44,7 +59,10 @@ export function QueueView({ items, zone, now, filter }: { items: QueueItem[]; zo
       </div>
 
       <nav aria-label="Saring antrean" className="mt-6 flex flex-wrap gap-2">
-        <Link href={paths.queue} className={`rounded-full border px-3 py-1.5 text-sm font-semibold ${!filter ? 'border-teal bg-teal text-paper' : 'border-line bg-card'}`}>
+        <Link
+          href={paths.queue}
+          className={`rounded-full border px-3 py-1.5 text-sm font-semibold ${!filter ? 'border-teal bg-teal text-paper' : 'border-line bg-card'}`}
+        >
           Semua aktif ({open.length})
         </Link>
         {(Object.keys(QUEUE_LABEL) as QueueCategory[])
@@ -93,7 +111,10 @@ export function QueueView({ items, zone, now, filter }: { items: QueueItem[]; zo
                     {i.openRequests > 0 && <Badge tone="clay">Minta ubah jadwal</Badge>}
                   </div>
                   <p className="mt-2 font-display text-xl">
-                    {i.patient} <span className="font-sans text-base font-normal text-muted">· {i.origin}, ±{i.distanceKm} km</span>
+                    {i.patient}{' '}
+                    <span className="font-sans text-base font-normal text-muted">
+                      · {i.origin}, ±{i.distanceKm} km
+                    </span>
                   </p>
                   <p className="text-ink-soft">{i.planSummary ?? i.title}</p>
                 </div>
@@ -103,7 +124,9 @@ export function QueueView({ items, zone, now, filter }: { items: QueueItem[]; zo
                       Ditahan, berakhir <Countdown until={i.holdExpiresAt} now={now} />
                     </p>
                   )}
-                  {i.firstVisit && <p className="text-muted">Kunjungan pertama {formatLocalDate(i.firstVisit)}</p>}
+                  {i.firstVisit && (
+                    <p className="text-muted">Kunjungan pertama {formatLocalDate(i.firstVisit)}</p>
+                  )}
                 </div>
               </Link>
             </li>

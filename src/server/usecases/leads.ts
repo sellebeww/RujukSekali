@@ -49,7 +49,7 @@ export type LeadResult = { ok: true; id: string } | { ok: false; errors: string[
 /** Public form: honeypot + minimum fill time + per-IP rate limit + explicit consent. Never accepts patient data. */
 export async function submitLead(
   ctx: Ctx,
-  input: LeadInput & { honeypot?: string; startedAt?: number },
+  input: Omit<LeadInput, 'consent'> & { consent: boolean; honeypot?: string; startedAt?: number },
   ip: string,
 ): Promise<LeadResult> {
   const now = ctx.clock.now();
@@ -60,7 +60,11 @@ export async function submitLead(
   }
   const { limit, windowSec } = policy.rateLimits.lead;
   if (!(await hitRateLimit(ctx.db, `lead:${ip}`, limit, windowSec, now))) {
-    throw new DomainError('RATE_LIMIT', 'Terlalu banyak permintaan dari perangkat ini. Coba lagi nanti.', 429);
+    throw new DomainError(
+      'RATE_LIMIT',
+      'Terlalu banyak permintaan dari perangkat ini. Coba lagi nanti.',
+      429,
+    );
   }
   const parsed = leadSchema.safeParse(input);
   if (!parsed.success) return { ok: false, errors: parsed.error.issues.map((i) => i.message) };
@@ -89,7 +93,11 @@ export async function listLeads(ctx: Ctx) {
   return ctx.db.select().from(lead).orderBy(desc(lead.createdAt));
 }
 
-export async function setLeadStatus(ctx: Ctx, id: string, status: 'baru' | 'dihubungi' | 'selesai' | 'ditolak') {
+export async function setLeadStatus(
+  ctx: Ctx,
+  id: string,
+  status: 'baru' | 'dihubungi' | 'selesai' | 'ditolak',
+) {
   requireRole(ctx, 'system_admin');
   await ctx.db.update(lead).set({ status }).where(eq(lead.id, id));
   await audit(ctx.db, ctx, { entity: 'lead', entityId: id, action: 'lead_status', to: status });

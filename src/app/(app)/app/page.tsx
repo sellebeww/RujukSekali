@@ -7,7 +7,11 @@ import { expireDueHolds } from '@/server/usecases/holds';
 export const dynamic = 'force-dynamic';
 export const metadata = { title: 'Antrean koordinator' };
 
-export default async function Dashboard({ searchParams }: { searchParams: Promise<{ filter?: string; akses?: string }> }) {
+export default async function Dashboard({
+  searchParams,
+}: {
+  searchParams: Promise<{ filter?: string; akses?: string }>;
+}) {
   const { filter, akses } = await searchParams;
   const ctx = makeCtx('app', SYSTEM_ACTOR);
   await expireDueHolds(ctx);
@@ -19,7 +23,7 @@ export default async function Dashboard({ searchParams }: { searchParams: Promis
           <Notice tone="danger" role="alert" title="Halaman itu tidak tersedia untuk peran Anda." />
         </div>
       )}
-      <QueueView items={items} zone="app" now={Date.now()} filter={filter} />
+      <QueueView items={items} zone="app" now={ctx.clock.now()} filter={filter} />
     </>
   );
 }

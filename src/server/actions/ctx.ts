@@ -51,7 +51,10 @@ export async function staffCtx(zone: ZoneParam): Promise<Ctx> {
 export const PATIENT_COOKIE = 'rs_patient';
 
 /** Patient context: the episode comes from the HttpOnly cookie (real) or the demo token in the form, never a raw id. */
-export async function patientCtx(zone: ZoneParam, demoToken?: string | null): Promise<{ ctx: Ctx; episodeId: string }> {
+export async function patientCtx(
+  zone: ZoneParam,
+  demoToken?: string | null,
+): Promise<{ ctx: Ctx; episodeId: string }> {
   const cid = await correlationId();
   const token = zone === 'demo' ? demoToken : (await cookies()).get(PATIENT_COOKIE)?.value;
   if (!token) throw new ForbiddenError('Tautan tidak berlaku. Minta tautan baru ke petugas.');
@@ -82,6 +85,9 @@ export async function run(body: () => Promise<ActionState>): Promise<ActionState
     if (e instanceof DomainError) return { ok: false, message: e.message };
     if (e && typeof e === 'object' && 'digest' in e) throw e; // Next.js redirect/notFound
     console.error(JSON.stringify({ level: 'error', event: 'action_failed', error: (e as Error).message }));
-    return { ok: false, message: 'Terjadi kesalahan. Tidak ada perubahan yang disimpan sebagian; silakan coba lagi.' };
+    return {
+      ok: false,
+      message: 'Terjadi kesalahan. Tidak ada perubahan yang disimpan sebagian; silakan coba lagi.',
+    };
   }
 }

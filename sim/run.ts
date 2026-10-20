@@ -10,15 +10,27 @@ const runs: SimMetrics[] = [];
 const t0 = Date.now();
 for (const seed of SEEDS) {
   runs.push(simulate({ ...DEFAULT_PARAMS, seed, strategy: 'baseline', ttlMin: 0 }));
-  for (const ttlMin of TTLS) runs.push(simulate({ ...DEFAULT_PARAMS, seed, strategy: 'rujuksekali', ttlMin }));
+  for (const ttlMin of TTLS)
+    runs.push(simulate({ ...DEFAULT_PARAMS, seed, strategy: 'rujuksekali', ttlMin }));
 }
 
 const keys = Object.keys(runs[0]!) as (keyof SimMetrics)[];
 const csv = (rows: Record<string, unknown>[]) =>
-  [Object.keys(rows[0]!).join(','), ...rows.map((r) => Object.values(r).map((v) => (typeof v === 'number' ? +v.toFixed(4) : v)).join(','))].join('\n') + '\n';
+  [
+    Object.keys(rows[0]!).join(','),
+    ...rows.map((r) =>
+      Object.values(r)
+        .map((v) => (typeof v === 'number' ? +v.toFixed(4) : v))
+        .join(','),
+    ),
+  ].join('\n') + '\n';
 
 function mean(rows: SimMetrics[]) {
-  const out: Record<string, number | string> = { strategy: rows[0]!.strategy, ttlMin: rows[0]!.ttlMin, runs: rows.length };
+  const out: Record<string, number | string> = {
+    strategy: rows[0]!.strategy,
+    ttlMin: rows[0]!.ttlMin,
+    runs: rows.length,
+  };
   for (const k of keys) {
     if (k === 'strategy' || k === 'ttlMin' || k === 'seed') continue;
     const vals = rows.map((r) => r[k] as number);
@@ -57,8 +69,16 @@ writeFileSync(
 );
 console.log(`Simulated ${runs.length} runs in ${((Date.now() - t0) / 1000).toFixed(1)} s`);
 const pick = (r: Record<string, number | string>) =>
-  ['tripsPerEpisode', 'cancellationRate', 'wastedTotal', 'holdToConfirm', 'displaced', 'blockedSlotHours', 'avgCostIdr', 'lost', 'completed'].map(
-    (k) => `${k}=${typeof r[k] === 'number' ? (r[k] as number).toFixed(2) : r[k]}`,
-  );
+  [
+    'tripsPerEpisode',
+    'cancellationRate',
+    'wastedTotal',
+    'holdToConfirm',
+    'displaced',
+    'blockedSlotHours',
+    'avgCostIdr',
+    'lost',
+    'completed',
+  ].map((k) => `${k}=${typeof r[k] === 'number' ? (r[k] as number).toFixed(2) : r[k]}`);
 console.log('baseline     ', pick(baseline).join(' '));
 for (const r of byTtl) console.log(`TTL ${String(r.ttlMin).padStart(4)} min`, pick(r).join(' '));

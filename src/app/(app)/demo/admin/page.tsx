@@ -9,8 +9,9 @@ export const dynamic = 'force-dynamic';
 export const metadata = { title: 'Kapasitas & aturan' };
 
 export default async function AdminUnit() {
-
   const db = makeCtx('demo', SYSTEM_ACTOR).db;
   const services = await db.select().from(serviceType).orderBy(asc(serviceType.sortOrder));
-  return <AdminUnitView zone="demo" services={services} capacity={await capacityOverview(db, todayLocal())} />;
+  return (
+    <AdminUnitView zone="demo" services={services} capacity={await capacityOverview(db, todayLocal())} />
+  );
 }

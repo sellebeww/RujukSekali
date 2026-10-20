@@ -11,5 +11,5 @@ export default async function DemoQueue({ searchParams }: { searchParams: Promis
   const { filter } = await searchParams;
   const ctx = makeCtx('demo', await demoActor());
   await expireDueHolds(ctx);
-  return <QueueView items={await loadQueue(ctx.db)} zone="demo" now={Date.now()} filter={filter} />;
+  return <QueueView items={await loadQueue(ctx.db)} zone="demo" now={ctx.clock.now()} filter={filter} />;
 }

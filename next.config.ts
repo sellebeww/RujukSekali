@@ -24,6 +24,8 @@ const security = [
 
 const config: NextConfig = {
   poweredByHeader: false,
+  // E2E builds use their own output directory so they never clash with `next dev`.
+  ...(process.env.NEXT_DIST_DIR ? { distDir: process.env.NEXT_DIST_DIR } : {}),
   env: {
     PUBLIC_SITE_URL: process.env.PUBLIC_SITE_URL ?? 'http://localhost:3000',
     APP_URL: process.env.APP_URL ?? 'http://localhost:3000',
@@ -38,7 +40,11 @@ const config: NextConfig = {
       // Patient pages never leak their URL (or a token) through the Referer header.
       ...['/p', '/p/:path*', '/demo/pasien/:path*'].map((source) => ({
         source,
-        headers: [...security, { key: 'Referrer-Policy', value: 'no-referrer' }, { key: 'Cache-Control', value: 'no-store' }],
+        headers: [
+          ...security,
+          { key: 'Referrer-Policy', value: 'no-referrer' },
+          { key: 'Cache-Control', value: 'no-store' },
+        ],
       })),
     ];
   },

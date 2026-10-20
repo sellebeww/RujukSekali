@@ -93,14 +93,12 @@ export async function seedDatabase(db: Db, o: SeedOptions) {
     .values(STAFF.map((s) => ({ ...s, passwordHash: pw })))
     .returning();
   const coordinator = users.find((u) => u.role === 'coordinator')!;
-  await db
-    .insert(seedMeta)
-    .values({
-      id: 1,
-      startDate: o.startDate,
-      seededAt: new Date(o.clock.now()),
-      rngSeed: o.rngSeed ?? 20261020,
-    });
+  await db.insert(seedMeta).values({
+    id: 1,
+    startDate: o.startDate,
+    seededAt: new Date(o.clock.now()),
+    rngSeed: o.rngSeed ?? 20261020,
+  });
 
   const ctx: Ctx = {
     db,
@@ -111,18 +109,6 @@ export async function seedDatabase(db: Db, o: SeedOptions) {
     actor: { type: 'user', id: coordinator.id, label: coordinator.name, role: 'coordinator' },
     correlationId: 'seed',
   };
-
-  // The five acceptance scenarios, each at a meaningful stage for the coordinator queue.
-  const stages: Record<ScenarioId, 'susun' | 'tahan' | 'konfirmasi'> = {
-    '1': 'susun',
-    '2': 'tahan',
-    '3': 'tahan',
-    '4': 'susun',
-    '5': 'tahan',
-  };
-  for (const id of ['1', '2', '3', '4', '5'] as ScenarioId[]) {
-    await runScenario(ctx, id, stages[id], `Pasien S${id}`);
-  }
 
   const n = o.randomEpisodes ?? 35;
   for (let i = 1; i <= n; i++) {
@@ -191,5 +177,19 @@ export async function seedDatabase(db: Db, o: SeedOptions) {
     if (escort) await confirmEscortDays(ctx, episodeId).catch(() => null);
     await approvePlan(ctx, best, crypto.randomUUID());
   }
+  // Scenarios last, so their proposed options reflect the final synthetic state.
+  // The five acceptance scenarios, each at a meaningful stage for the coordinator queue.
+  const stages: Record<ScenarioId, 'susun' | 'tahan' | 'konfirmasi'> = {
+    '1': 'susun',
+    '2': 'tahan',
+    '3': 'tahan',
+    '4': 'susun',
+    '5': 'tahan',
+  };
+  // Held scenarios first, then proposal-only ones, so the latter are not invalidated by the former.
+  for (const id of ['2', '3', '5', '1', '4'] as ScenarioId[]) {
+    await runScenario(ctx, id, stages[id], `Pasien S${id}`);
+  }
+
   return { coordinatorId: coordinator.id };
 }

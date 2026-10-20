@@ -29,7 +29,11 @@ export async function patientEscortAction(_: ActionState, fd: FormData): Promise
     refresh(zone);
     return res?.confirmed
       ? { ok: true, message: 'Terima kasih! Semua syarat lengkap — jadwal Anda sudah pasti.' }
-      : { ok: true, message: 'Terima kasih, kehadiran pendamping tercatat.', details: res?.blockers.map((b) => b.message) };
+      : {
+          ok: true,
+          message: 'Terima kasih, kehadiran pendamping tercatat.',
+          details: res?.blockers.map((b) => b.message),
+        };
   });
 }
 

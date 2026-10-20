@@ -19,7 +19,10 @@ export async function serviceRulesAction(_: ActionState, fd: FormData): Promise<
       maxExtensions: Number(g('maxExtensions')),
     });
     revalidatePath(zone === 'demo' ? '/demo' : '/app', 'layout');
-    return { ok: true, message: 'Aturan layanan disimpan. Berlaku untuk penyusunan dan penahanan berikutnya.' };
+    return {
+      ok: true,
+      message: 'Aturan layanan disimpan. Berlaku untuk penyusunan dan penahanan berikutnya.',
+    };
   });
 }
 
@@ -27,7 +30,12 @@ export async function blockDayAction(_: ActionState, fd: FormData): Promise<Acti
   return run(async () => {
     const zone = parseZone(fd.get('zone'));
     const blocked = fd.get('op') === 'block';
-    const n = await setDayBlocked(await staffCtx(zone), String(fd.get('serviceTypeId')), String(fd.get('localDate')), blocked);
+    const n = await setDayBlocked(
+      await staffCtx(zone),
+      String(fd.get('serviceTypeId')),
+      String(fd.get('localDate')),
+      blocked,
+    );
     revalidatePath(zone === 'demo' ? '/demo' : '/app', 'layout');
     return { ok: true, message: blocked ? `${n} slot kosong diblokir.` : `${n} slot dibuka kembali.` };
   });
