@@ -5,15 +5,21 @@
   --font-sans: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
   --font-display: var(--font-fraunces), ui-serif, Georgia, serif;
 
-  --color-ink: #0f3532;
-  --color-ink-soft: #3d5a57;
-  --color-muted: #4f5f5c;
-  --color-paper: #f7f2e8;
-  --color-paper-deep: #efe7d6;
-  --color-card: #fffdf8;
-  --color-line: #d9cfbb;
-  --color-teal: #0f5c57;
-  --color-teal-soft: #d7e9e5;
+  /* Palette follows the logo: blue → aqua → green on a cool paper. "teal" stays the primary token name. */
+  --color-ink: #0b2540;
+  --color-ink-soft: #34506b;
+  --color-muted: #4a5d70;
+  --color-paper: #f4f8fb;
+  --color-paper-deep: #e6eef5;
+  --color-card: #ffffff;
+  --color-line: #cfdbe6;
+  --color-teal: #0b5aa6;
+  --color-teal-soft: #dcebf9;
+  /* Logo gradient stops: decoration only, never body text (aqua is below 4.5:1 on paper). */
+  --color-brand-blue: #1565c0;
+  --color-brand-aqua: #0a9bb0;
+  --color-brand-green: #2fb77a;
+  --color-brand-wordmark-2: #077a7a;
   --color-clay: #9a3b1f;
   --color-clay-soft: #f6ddd2;
   --color-ochre: #8a5a00;
@@ -24,7 +30,7 @@
   --color-danger-soft: #f9dcd8;
 
   --radius-ticket: 14px;
-  --shadow-ticket: 0 1px 0 rgb(15 53 50 / 0.06), 0 8px 24px -12px rgb(15 53 50 / 0.25);
+  --shadow-ticket: 0 1px 0 rgb(11 37 64 / 0.05), 0 8px 24px -12px rgb(11 37 64 / 0.22);
 }
 
 @layer base {
@@ -79,11 +85,13 @@
     margin-block: 0.75em;
     max-width: 68ch;
   }
-  .prose-rs ul {
+  .prose-rs ul,
+  ul.prose-rs {
     list-style: disc;
     padding-left: 1.25em;
   }
-  .prose-rs ol {
+  .prose-rs ol,
+  ol.prose-rs {
     list-style: decimal;
     padding-left: 1.25em;
   }
@@ -113,7 +121,7 @@
     height: 12px;
   }
   .paper-grain {
-    background-image: radial-gradient(rgb(15 53 50 / 0.035) 1px, transparent 1px);
+    background-image: radial-gradient(rgb(11 37 64 / 0.035) 1px, transparent 1px);
     background-size: 4px 4px;
   }
   .skip-link {
@@ -129,6 +137,21 @@
   .skip-link:focus {
     left: 0.5rem;
   }
+  /* HoldArt: the static look is the "held" state, so reduced motion still tells the story. */
+  .hold-slot {
+    background: var(--color-teal-soft);
+    border-color: var(--color-teal);
+  }
+  .hold-lock {
+    color: var(--color-teal);
+  }
+  .hold-bar {
+    transform: scaleX(0.6);
+  }
+  .hold-idle,
+  .hold-done {
+    opacity: 0;
+  }
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -139,6 +162,141 @@
   }
   .fade-up {
     animation: fade-up 0.6s ease-out both;
+  }
+  .stop-pop {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: stop-pop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  }
+  /* One shared 9s timeline: empty → both slots held at once → timer drains → confirmed. */
+  .hold-slot {
+    animation: hold-slot 9s ease-in-out infinite;
+  }
+  .hold-lock {
+    animation: hold-lock 9s ease-in-out infinite;
+  }
+  .hold-bar {
+    animation: hold-bar 9s linear infinite;
+  }
+  .hold-timer {
+    animation: hold-timer 9s ease-in-out infinite;
+  }
+  .hold-idle {
+    animation: hold-idle 9s infinite;
+  }
+  .hold-held {
+    animation: hold-held 9s infinite;
+  }
+  .hold-done {
+    animation: hold-done 9s infinite;
+  }
+  /* Scroll reveal for the company profile only; browsers without scroll timelines just show the content. */
+  @supports (animation-timeline: view()) {
+    .marketing .ticket,
+    .marketing h2 {
+      animation: fade-up linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 35%;
+    }
+  }
+}
+@keyframes hold-slot {
+  0%,
+  12% {
+    background: var(--color-card);
+    border-color: var(--color-line);
+  }
+  18%,
+  78% {
+    background: var(--color-teal-soft);
+    border-color: var(--color-teal);
+  }
+  84%,
+  100% {
+    background: var(--color-leaf-soft);
+    border-color: var(--color-leaf);
+  }
+}
+@keyframes hold-lock {
+  0%,
+  12% {
+    opacity: 0;
+    transform: scale(0.4);
+    color: var(--color-teal);
+  }
+  17% {
+    opacity: 1;
+    transform: scale(1.25);
+  }
+  21%,
+  78% {
+    transform: scale(1);
+    color: var(--color-teal);
+  }
+  84%,
+  100% {
+    opacity: 1;
+    color: var(--color-leaf);
+  }
+}
+@keyframes hold-bar {
+  0%,
+  18% {
+    transform: scaleX(1);
+  }
+  78%,
+  100% {
+    transform: scaleX(0.25);
+  }
+}
+@keyframes hold-timer {
+  0%,
+  78% {
+    opacity: 1;
+  }
+  84%,
+  100% {
+    opacity: 0.35;
+  }
+}
+@keyframes hold-idle {
+  0%,
+  12% {
+    opacity: 1;
+  }
+  16%,
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes hold-held {
+  0%,
+  12% {
+    opacity: 0;
+  }
+  16%,
+  78% {
+    opacity: 1;
+  }
+  82%,
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes hold-done {
+  0%,
+  78% {
+    opacity: 0;
+  }
+  82%,
+  100% {
+    opacity: 1;
+  }
+}
+@keyframes stop-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.6);
   }
 }
 @keyframes draw {

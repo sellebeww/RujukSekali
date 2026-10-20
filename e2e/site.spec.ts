@@ -67,9 +67,9 @@ for (const path of PAGES) {
   });
 }
 
-test('sitemap, robots, metadata, JSON-LD', async ({ page, request }) => {
+test('sitemap, robots, metadata, JSON-LD', async ({ page, request, baseURL }) => {
   const sitemap = await (await request.get('/sitemap.xml')).text();
-  for (const p of PAGES) expect(sitemap).toContain(`<loc>http://localhost:3100${p === '/' ? '' : p}`);
+  for (const p of PAGES) expect(sitemap).toContain(`<loc>${baseURL}${p === '/' ? '' : p}`);
   expect(await (await request.get('/robots.txt')).text()).toContain('Disallow: /app');
   await page.goto('/');
   await expect(page.locator('meta[property="og:title"]')).toHaveCount(1);

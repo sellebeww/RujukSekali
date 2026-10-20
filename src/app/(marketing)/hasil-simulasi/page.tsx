@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { PageHero } from '@/components/marketing/PageHero';
 import { ResultTiles, SimulationLabel, TtlTradeoff } from '@/components/SimulationResults';
 import { Notice, SectionTitle } from '@/components/ui';
+import { links } from '@/config/links';
 import { simulation, ttlLabel } from '@/content/simulation';
 
 export const metadata: Metadata = {
@@ -39,7 +40,7 @@ export default function HasilSimulasi() {
             id="ttl"
             eyebrow="Eksperimen TTL"
             title="Berapa lama jadwal sebaiknya ditahan?"
-            lead="Penahanan lebih lama memberi pasien waktu melengkapi dokumen — lebih banyak penahanan berakhir terkonfirmasi. Tetapi kapasitas tertahan lebih lama dan pasien lain lebih sering gagal mendapat jadwal. Garis tipis vertikal menunjukkan variasi antar-seed."
+            lead="Penahanan lebih lama memberi pasien waktu melengkapi dokumen — lebih banyak penahanan berakhir terkonfirmasi. Tetapi kapasitas tertahan lebih lama dan pasien lain lebih sering gagal mendapat jadwal. Pita samar di setiap titik menunjukkan variasi antar-seed."
           />
           <div className="mt-6">
             <TtlTradeoff />
@@ -101,8 +102,8 @@ export default function HasilSimulasi() {
             </li>
           </ul>
           <p>
-            Rincian lengkap ada di dokumen <code>docs/EKSPERIMEN-TTL.md</code> dan data mentahnya di{' '}
-            <code>sim/out/</code>.
+            Ingin melihat rincian eksperimen dan data mentahnya?{' '}
+            <a href={links.site.mintaDemo()}>Hubungi kami</a>.
           </p>
         </div>
       </section>

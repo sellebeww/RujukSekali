@@ -7,7 +7,7 @@ export function DemoBanner({ from }: { from?: string | null }) {
         <p className="font-semibold">
           <span aria-hidden="true">◆ </span>Mode demo — data sintetis
         </p>
-        <p className="hidden text-ink-soft md:block">
+        <p className="hidden min-w-0 flex-1 basis-0 text-ink-soft lg:block">
           Semua pasien, jadwal, dan angka di sini buatan. Aksi hanya mengubah sandbox demo.
         </p>
         <div className="ml-auto flex gap-2">

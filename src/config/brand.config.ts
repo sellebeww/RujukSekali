@@ -14,7 +14,7 @@ export const brand = {
   },
   locale: 'id-ID',
   // Colours live in src/app/globals.css as design tokens; listed here for metadata/OG use.
-  themeColor: '#0f5c57',
+  themeColor: '#0b5aa6',
   demoHospital: 'RS Contoh Nusantara',
 } as const;
 

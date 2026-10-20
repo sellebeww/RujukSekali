@@ -21,18 +21,18 @@ export default function Home() {
       <section className="paper-grain border-b border-line">
         <div className="container-page grid items-center gap-10 py-14 lg:grid-cols-[1.1fr_1fr] lg:py-20">
           <div>
-            <p className="text-sm font-semibold tracking-wide text-clay uppercase">
+            <p className="fade-up text-sm font-semibold tracking-wide text-clay uppercase">
               Koordinasi layanan untuk pasien luar kota
             </p>
-            <h1 className="mt-3 text-5xl leading-[1.05] sm:text-6xl">
+            <h1 className="fade-up mt-3 text-5xl leading-[1.05] [animation-delay:80ms] sm:text-6xl">
               Satu perjalanan untuk semua pemeriksaan.
             </h1>
-            <p className="mt-5 max-w-xl text-xl text-ink-soft">
+            <p className="fade-up mt-5 max-w-xl text-xl text-ink-soft [animation-delay:160ms]">
               Pasien dari luar kota sering bolak-balik karena jadwal lab, poli, dokumen, dan pendamping tidak
               selaras. {brand.name} menyusunnya menjadi satu rangkaian kunjungan yang benar-benar bisa
               dijalani.
             </p>
-            <div className="mt-8 flex flex-wrap gap-3">
+            <div className="fade-up mt-8 flex flex-wrap gap-3 [animation-delay:240ms]">
               <LinkButton href={withFrom(links.demo.home(), siteRoutes.home)} external>
                 Coba Demo Aplikasi
               </LinkButton>

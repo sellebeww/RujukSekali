@@ -1,12 +1,63 @@
-# RujukSekali (nama sementara)
+<div align="center">
 
-**Satu perjalanan, semua layanan beres.** Sistem koordinasi yang menyusun beberapa layanan rumah sakit (contoh MVP:
-pemeriksaan darah + konsultasi poli penyakit dalam) menjadi **satu rangkaian kunjungan yang benar-benar bisa dijalani
-pasien dari luar kota** — memperhatikan urutan layanan, waktu hasil lab, puasa, dokumen, pendamping, dan jadwal
-bus/kereta — lalu **menahan jadwal sementara** dan **mengonfirmasinya hanya ketika semua syarat penting siap**.
+<img src="public/icon.svg" alt="Logo RujukSekali" width="96" />
+
+# RujukSekali
+
+**Satu perjalanan, semua layanan beres.**
+
+Koordinasi kunjungan rumah sakit untuk pasien dari luar kota: beberapa layanan, satu rencana, satu kali datang.
+
+![Next.js](https://img.shields.io/badge/Next.js-App_Router-000?logo=nextdotjs)
+![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178c6?logo=typescript&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-336791?logo=postgresql&logoColor=white)
+![Tests](https://img.shields.io/badge/tests-Vitest_%2B_Playwright-2fb77a)
+![Data](https://img.shields.io/badge/data-sintetis-0a9bb0)
+
+</div>
+
+---
+
+## Masalahnya
+
+Pasien rujukan dari kabupaten sering harus datang berkali-kali: sekali untuk ambil darah, lain hari untuk konsultasi
+karena hasil lab belum siap atau jadwal poli penuh. Tiap kunjungan berarti ongkos transportasi, penginapan, dan
+kehilangan penghasilan.
+
+## Solusinya
+
+RujukSekali menyusun layanan-layanan itu menjadi **satu rangkaian kunjungan yang benar-benar bisa dijalani**,
+memperhatikan urutan layanan, waktu hasil lab, puasa, dokumen, pendamping, dan jadwal bus/kereta. Jadwal
+**ditahan sementara**, lalu **dikonfirmasi hanya ketika semua syarat penting siap**. Seperti kursi bioskop yang
+disisihkan untuk Anda sampai Anda bayar, tetapi untuk seluruh rangkaian jadwal sekaligus.
+
+## Fitur utama
+
+| | Fitur | Isi |
+| --- | --- | --- |
+| 🧭 | **Penyusun rencana perjalanan** | Mesin murni dan deterministik; menghasilkan hingga 3 opsi beserta alasannya (jumlah kedatangan, hasil lab siap sebelum konsultasi, transportasi, biaya). |
+| 🔒 | **Tahan jadwal (hold saga)** | Semua slot ditahan bersama atau tidak sama sekali; kegagalan parsial dibatalkan bersih. Tahan, perpanjang, lepas, atau kedaluwarsa otomatis dengan TTL berjenjang. |
+| ✅ | **Konfirmasi bersyarat** | Jadwal otomatis pasti begitu dokumen terakhir diverifikasi dan rencana disetujui. |
+| 🏥 | **Zona koordinator** | Menyusun rencana, menahan jadwal, memverifikasi dokumen, mengelola prioritas klinis. |
+| 📱 | **Zona pasien tanpa akun** | Tautan bertoken (hash SHA-256, berlaku 72 jam, bisa dicabut) yang ditukar jadi cookie HttpOnly; jadwal, persiapan puasa, dokumen, dan perkiraan biaya. |
+| 🛠️ | **Zona admin unit** | Atur kapasitas, tier TTL, rasio hold maksimum, dan aturan layanan. |
+| 🧪 | **Mode demo** | `/demo` tanpa akun pada database terpisah yang di-reset berkala; 5 skenario siap coba. |
+| 📊 | **Simulator & metrik** | Simulator discrete-event memakai engine yang sama; bandingkan pesan satu per satu vs terkoordinasi dan trade-off TTL. |
+| 🛡️ | **Pagar pengaman** | Rasio hold maksimum, idempotensi, rate limit, audit append-only, kedaluwarsa dengan clock yang bisa di-inject. |
+| 🌐 | **Company profile** | Halaman pemasaran, cara kerja, hasil simulasi, dan formulir minta demo. Nama produk bisa diganti dari satu berkas konfigurasi. |
 
 > MVP ini hanya memakai **data sintetis**. Sistem mengoordinasikan logistik dan **tidak menggantikan penilaian klinis**.
 > Integrasi BPJS/SATUSEHAT/SIMRS belum ada (adapter tiruan).
+
+## Arsitektur singkat
+
+```
+app (UI/route handlers) ──► server (use-cases, repo, adapters) ──► domain (state machine) ──► engine (murni)
+sim/ (simulator) ──► engine + domain   (tanpa DB, tanpa Next)
+```
+
+Next.js App Router, TypeScript strict, PostgreSQL + Drizzle, zod di batas sistem. Engine tanpa I/O dan tanpa
+`Date.now()`, dijaga aturan ESLint. Detail: [docs/ARSITEKTUR.md](docs/ARSITEKTUR.md).
 
 ## Menjalankan (± 5 menit)
 

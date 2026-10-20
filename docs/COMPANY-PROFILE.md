@@ -35,13 +35,13 @@ Setiap placeholder tampil di halaman sebagai label kuning `[ISI: …]` agar tida
 
 Konten lain yang belum final (bukan placeholder teks, tetapi perlu keputusan):
 
-| Item                       | Status sekarang                                                     | Cara mengganti                                      |
-| -------------------------- | ------------------------------------------------------------------- | --------------------------------------------------- |
-| Nama produk & tagline      | "RujukSekali" — "Satu perjalanan, semua layanan beres." (sementara) | Ubah `brand.config.ts` (atau `BRAND_NAME_OVERRIDE`) |
-| Logo                       | Ikon garis-perjalanan SVG sederhana + wordmark                      | `src/components/Logo.tsx`, `public/icon.svg`        |
-| Domain                     | Lokal `http://localhost:3000`                                       | `PUBLIC_SITE_URL`, `APP_URL`, `COOKIE_DOMAIN`       |
-| Gambar Open Graph          | Belum ada gambar khusus (pakai judul/deskripsi)                     | Tambah `src/app/opengraph-image.png`                |
-| Kebijakan privasi & syarat | Draf berlabel "perlu ditinjau hukum"                                | Tinjauan hukum                                      |
+| Item                       | Status sekarang                                                                        | Cara mengganti                                                              |
+| -------------------------- | -------------------------------------------------------------------------------------- | --------------------------------------------------------------------------- |
+| Nama produk & tagline      | "RujukSekali" — "Satu perjalanan, semua layanan beres." (sementara)                    | Ubah `brand.config.ts` (atau `BRAND_NAME_OVERRIDE`)                         |
+| Logo                       | Tanda plus bergradien biru→hijau dengan dua rute (SVG transparan) + wordmark dua warna | `public/icon.svg` (dipakai juga sebagai favicon), `src/components/Logo.tsx` |
+| Domain                     | Lokal `http://localhost:3000`                                                          | `PUBLIC_SITE_URL`, `APP_URL`, `COOKIE_DOMAIN`                               |
+| Gambar Open Graph          | Dibuat otomatis dari logo, nama, dan tagline                                           | `src/app/opengraph-image.tsx`                                               |
+| Kebijakan privasi & syarat | Draf berlabel "perlu ditinjau hukum"                                                   | Tinjauan hukum                                                              |
 
 ## Struktur halaman
 

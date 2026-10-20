@@ -13,19 +13,25 @@ export function HeroArt() {
         <pattern id="grain" width="6" height="6" patternUnits="userSpaceOnUse">
           <circle cx="1" cy="1" r="0.8" fill="var(--color-line)" />
         </pattern>
+        <linearGradient id="route" x1="40" y1="0" x2="560" y2="0" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stopColor="var(--color-brand-blue)" />
+          <stop offset="0.55" stopColor="var(--color-brand-aqua)" />
+          <stop offset="1" stopColor="var(--color-brand-green)" />
+        </linearGradient>
       </defs>
       <rect x="0" y="0" width="600" height="320" rx="24" fill="url(#grain)" opacity="0.6" />
       <path
         className="draw-line"
         d="M40 250 C 90 170, 120 120, 170 120 S 260 215, 310 205 S 390 80, 430 85 S 520 230, 560 220"
         fill="none"
-        stroke="var(--color-teal)"
+        stroke="url(#route)"
         strokeWidth="5"
         strokeLinecap="round"
         strokeDasharray="1200"
       />
       {stops.map((s, i) => (
-        <g key={s.label}>
+        // Delay tracks the draw-line animation so each stop appears as the line reaches it.
+        <g key={s.label} className="stop-pop" style={{ animationDelay: `${0.2 + i * 0.55}s` }}>
           <circle
             cx={s.x}
             cy={s.y}
@@ -35,9 +41,9 @@ export function HeroArt() {
             strokeWidth="4"
           />
           <text
-            x={s.x}
+            x={i === 0 ? s.x - 14 : s.x}
             y={s.y + (s.y > 150 ? 36 : -40)}
-            textAnchor="middle"
+            textAnchor={i === 0 ? 'start' : 'middle'}
             fontSize="17"
             fontWeight="700"
             fill="var(--color-ink)"
@@ -45,9 +51,9 @@ export function HeroArt() {
             {s.label}
           </text>
           <text
-            x={s.x}
+            x={i === 0 ? s.x - 14 : s.x}
             y={s.y + (s.y > 150 ? 56 : -20)}
-            textAnchor="middle"
+            textAnchor={i === 0 ? 'start' : 'middle'}
             fontSize="14"
             fill="var(--color-ink-soft)"
           >

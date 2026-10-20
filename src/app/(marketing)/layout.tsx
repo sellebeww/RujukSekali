@@ -5,7 +5,7 @@ export default function MarketingLayout({ children }: { children: React.ReactNod
   return (
     <>
       <SiteHeader variant="marketing" />
-      <main id="isi" className="flex-1">
+      <main id="isi" className="marketing flex-1">
         {children}
       </main>
       <SiteFooter />

@@ -81,7 +81,7 @@ export function ActionForm({
             minLength={5}
             maxLength={300}
             placeholder={reason.placeholder}
-            className="min-h-11 rounded-lg border border-line bg-card px-3 py-2"
+            className="min-h-11 w-full rounded-lg border border-line bg-card px-3 py-2 sm:min-w-64"
           />
         </div>
       )}

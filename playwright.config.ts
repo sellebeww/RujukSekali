@@ -2,7 +2,8 @@ import { existsSync } from 'node:fs';
 import { defineConfig, devices } from '@playwright/test';
 
 if (existsSync('.env')) process.loadEnvFile('.env');
-const PORT = 3100;
+// E2E_PORT lets the suite run while another local server holds 3100.
+const PORT = Number(process.env.E2E_PORT ?? 3100);
 const URL = `http://localhost:${PORT}`;
 const env = {
   ...process.env,
@@ -22,7 +23,13 @@ export default defineConfig({
   retries: 0,
   timeout: 60_000,
   reporter: [['list']],
-  use: { baseURL: URL, trace: 'retain-on-failure', locale: 'id-ID' },
+  // Reduced motion: axe must measure contrast on settled content, not mid-fade (scroll reveal, tab fade).
+  use: {
+    baseURL: URL,
+    trace: 'retain-on-failure',
+    locale: 'id-ID',
+    contextOptions: { reducedMotion: 'reduce' },
+  },
   projects: [
     { name: 'desktop', use: { ...devices['Desktop Chrome'] } },
     { name: 'mobile', use: { ...devices['Pixel 7'] }, testMatch: /(navigation|patient)\.spec\.ts/ },

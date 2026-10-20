@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { BeforeAfter } from '@/components/BeforeAfter';
+import { HoldArt } from '@/components/HoldArt';
 import { PageHero } from '@/components/marketing/PageHero';
 import { Steps } from '@/components/marketing/Steps';
 import { LinkButton, Notice, SectionTitle } from '@/components/ui';
@@ -61,6 +62,7 @@ export default function CaraKerja() {
             jadwal dalam satu rencana — misalnya ambil darah pukul 07.30 dan konsultasi pukul 11.00 —
             disisihkan bersama-sama untuk satu pasien.
           </p>
+          <HoldArt />
           <ul>
             <li>Semuanya ditahan sekaligus, atau tidak sama sekali. Tidak ada setengah rencana.</li>
             <li>
@@ -91,6 +93,28 @@ export default function CaraKerja() {
           Sistem mengoordinasikan logistik. Prioritas klinis diisi tenaga kesehatan; kasus mendesak keluar
           dari alur otomatis dan ditangani langsung. Kondisi darurat: segera ke IGD.
         </Notice>
+      </section>
+
+      <section className="container-page pb-16" aria-labelledby="coba">
+        <div className="ticket flex flex-col gap-5 p-6 sm:p-8 md:flex-row md:items-center">
+          <div className="flex-1">
+            <h2 id="coba" className="text-2xl sm:text-3xl">
+              Lihat sendiri jadwal yang ditahan.
+            </h2>
+            <p className="mt-2 max-w-xl text-ink-soft">
+              Demo langsung terbuka tanpa akun. Anda mendapat salinan skenario sendiri berisi data sintetis,
+              jadi aman untuk mencoba tombol apa pun.
+            </p>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <LinkButton href={links.demo.start('1', { stage: 'tahan', from: siteRoutes.caraKerja })} external>
+              Buka contoh rencana ditahan
+            </LinkButton>
+            <LinkButton href={withFrom(links.demo.home(), siteRoutes.caraKerja)} external tone="secondary">
+              Pilih skenario lain
+            </LinkButton>
+          </div>
+        </div>
       </section>
     </>
   );

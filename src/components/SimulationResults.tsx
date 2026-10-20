@@ -47,9 +47,13 @@ export function ResultTiles() {
       {tiles.map((t) => (
         <li key={t.label} className="ticket p-4">
           <p className="text-sm font-semibold text-muted">{t.label}</p>
-          <p className="mt-2 flex items-baseline gap-2">
-            <span className="font-display text-4xl text-ink">{t.after}</span>
+          <p className="mt-2 flex flex-wrap items-baseline gap-x-2">
+            <span className="font-display text-4xl text-ink">
+              <span className="sr-only">Terkoordinasi: </span>
+              {t.after}
+            </span>
             <span className="text-sm text-muted line-through" title="Pesan satu per satu">
+              <span className="sr-only">dibanding pesan satu per satu: </span>
               {t.before}
             </span>
           </p>

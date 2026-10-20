@@ -26,7 +26,7 @@ export const metadata: Metadata = {
     description: brand.description,
   },
   twitter: { card: 'summary_large_image' },
-  icons: { icon: '/icon.svg' },
+  icons: { icon: '/icon.svg?v=2' },
 };
 
 export const viewport: Viewport = { themeColor: brand.themeColor, width: 'device-width', initialScale: 1 };
