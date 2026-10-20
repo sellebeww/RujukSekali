@@ -1,0 +1,19 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: rujuk
+      POSTGRES_PASSWORD: rujuk_local_only
+      POSTGRES_DB: rujuksekali
+    ports:
+      - '5433:5432'
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./docker/initdb:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U rujuk -d rujuksekali']
+      interval: 2s
+      timeout: 3s
+      retries: 30
+volumes:
+  pgdata:
