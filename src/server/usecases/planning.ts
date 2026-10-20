@@ -1,5 +1,6 @@
 import { and, asc, eq, gte, inArray, lte, ne, sql } from 'drizzle-orm';
 import { policy } from '@/config/policy';
+import { allowedHeld } from '@/domain/capacity';
 import { planTrips, type PlanningInput, type PlanningResult } from '@/engine';
 import { addDays } from '@/lib/time';
 import { audit } from '../audit';
@@ -51,10 +52,7 @@ export async function holdCapDays(ex: Executor, serviceTypeIds: string[], from: 
   return rows.filter((r) => r.held >= allowedHeld(r.total, r.ratio));
 }
 
-/** shortcut: at least one hold is always allowed on a day with capacity, so tiny units are not locked out. */
-export function allowedHeld(total: number, ratio: number) {
-  return total === 0 ? 0 : Math.max(1, Math.floor(total * ratio));
-}
+export { allowedHeld } from '@/domain/capacity';
 
 export async function buildPlanningInput(
   ex: Executor,

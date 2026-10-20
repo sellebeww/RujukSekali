@@ -94,3 +94,8 @@ export class FakeClock implements Clock {
     this.t += ms;
   }
 }
+
+/** "Senin, 3 Nov 07:30" in WIB. */
+export function formatLocalDateTime(ms: number): string {
+  return `${formatLocalDate(toLocalDate(ms))} ${formatLocalTime(ms)}`;
+}

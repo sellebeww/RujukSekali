@@ -255,13 +255,17 @@ async function holdPlanOnce(ctx: Ctx, planId: string): Promise<HoldOutcome> {
         .from(serviceType)
         .where(inArray(serviceType.id, [...new Set(visits.map((v) => v.serviceTypeId))]));
       const ttlMin = Math.min(...services.map((s) => s.holdTtlMinutes[ep.holdTier]));
+      // A hold never outlives the moment the first visit must be certain (start minus the planning lead time).
+      const firstStart = Math.min(...visits.map((v) => v.startsAt.getTime()));
+      const expiresAt = Math.min(now + ttlMin * MINUTE, firstStart - policy.planner.minLeadMin * MINUTE);
+      if (expiresAt <= now) throw new DomainError('TOO_LATE', 'Kunjungan pertama terlalu dekat untuk ditahan; susun ulang opsi.');
       const [h] = await tx
         .insert(hold)
         .values({
           tripPlanId: plan.id,
           status: 'pending',
           tier: ep.holdTier,
-          expiresAt: new Date(now + ttlMin * MINUTE),
+          expiresAt: new Date(expiresAt),
           createdAt: new Date(now),
         })
         .returning();
