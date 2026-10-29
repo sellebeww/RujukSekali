@@ -75,8 +75,6 @@ export interface ActionState {
   secret?: string;
 }
 
-export const initialState: ActionState = { ok: null, message: '' };
-
 /** Wraps an action body: domain errors become friendly messages; anything else is logged and hidden. */
 export async function run(body: () => Promise<ActionState>): Promise<ActionState> {
   try {

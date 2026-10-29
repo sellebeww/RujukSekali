@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { PageHero } from '@/components/marketing/PageHero';
 import { LinkButton, Notice } from '@/components/ui';
-import { links, siteRoutes } from '@/config/links';
+import { links } from '@/config/links';
 import { patientFaq } from '@/content/faq';
 
 export const metadata: Metadata = {
@@ -17,15 +17,12 @@ export default function UntukPasien() {
         title="Datang sekali, semua beres."
         lead="Rumah sakit mengatur jadwal Anda supaya bisa selesai dalam sesedikit mungkin kedatangan."
       >
-        <LinkButton
-          href={links.demo.start('1', { stage: 'tahan', view: 'pasien', from: siteRoutes.untukPasien })}
-          external
-        >
+        <LinkButton href={links.app.login()} external>
           Lihat contoh halaman pasien
         </LinkButton>
       </PageHero>
 
-      <section className="container-page max-w-3xl py-12" aria-labelledby="terjadi">
+      <section className="container-narrow py-12" aria-labelledby="terjadi">
         <h2 id="terjadi" className="text-3xl">
           Apa yang akan terjadi
         </h2>
@@ -62,7 +59,7 @@ export default function UntukPasien() {
       </section>
 
       <section className="border-y border-line bg-paper-deep/50" aria-labelledby="siapkan">
-        <div className="container-page max-w-3xl py-12">
+        <div className="container-narrow py-12">
           <h2 id="siapkan" className="text-3xl">
             Yang perlu disiapkan
           </h2>
@@ -75,7 +72,7 @@ export default function UntukPasien() {
         </div>
       </section>
 
-      <section className="container-page max-w-3xl py-12" aria-labelledby="tanya">
+      <section className="container-narrow py-12" aria-labelledby="tanya">
         <h2 id="tanya" className="text-3xl">
           Pertanyaan yang sering muncul
         </h2>
@@ -89,7 +86,7 @@ export default function UntukPasien() {
         </div>
       </section>
 
-      <section className="container-page max-w-3xl pb-12" aria-labelledby="data">
+      <section className="container-narrow pb-12" aria-labelledby="data">
         <h2 id="data" className="text-3xl">
           Bagaimana data Anda dilindungi
         </h2>

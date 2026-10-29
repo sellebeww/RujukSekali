@@ -62,16 +62,6 @@ export function formatLocalTime(ms: number): string {
   return minToHhmm(localMinuteOfDay(ms));
 }
 
-export function formatDuration(ms: number): string {
-  const totalMin = Math.max(0, Math.round(ms / MINUTE));
-  const d = Math.floor(totalMin / (24 * 60));
-  const h = Math.floor((totalMin % (24 * 60)) / 60);
-  const m = totalMin % 60;
-  if (d > 0) return `${d} hari ${h} jam`;
-  if (h > 0) return `${h} jam ${m} menit`;
-  return `${m} menit`;
-}
-
 export function formatIdr(n: number): string {
   return 'Rp' + Math.round(n).toLocaleString('id-ID');
 }

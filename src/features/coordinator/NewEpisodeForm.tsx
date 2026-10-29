@@ -1,5 +1,5 @@
 import { ActionForm } from '@/components/ActionForm';
-import { Field, inputClass, Notice } from '@/components/ui';
+import { Field, inputClass, Notice, selectClass } from '@/components/ui';
 import { REGENCIES } from '@seed/reference';
 import { addDays } from '@/lib/time';
 import { createEpisodeAction } from '@/server/actions/coordinator';
@@ -51,7 +51,7 @@ export function NewEpisodeForm({ zone, today }: { zone: Zone; today: string }) {
               <select
                 id="originRegency"
                 name="originRegency"
-                className={inputClass}
+                className={selectClass}
                 defaultValue="Kab. Sukamaju"
               >
                 {REGENCIES.map((r) => (
@@ -72,7 +72,7 @@ export function NewEpisodeForm({ zone, today }: { zone: Zone; today: string }) {
                   className={inputClass}
                 />
               </Field>
-              <Field label="Waktu tempuh (menit)" htmlFor="travelMinutes">
+              <Field label="Tempuh (menit)" htmlFor="travelMinutes">
                 <input
                   id="travelMinutes"
                   name="travelMinutes"
@@ -148,20 +148,25 @@ export function NewEpisodeForm({ zone, today }: { zone: Zone; today: string }) {
               />
             </Field>
             <Field label="Prioritas (diisi tenaga kesehatan)" htmlFor="priority">
-              <select id="priority" name="priority" className={inputClass}>
+              <select id="priority" name="priority" className={selectClass}>
                 <option value="rutin">Rutin</option>
                 <option value="segera">Segera</option>
               </select>
             </Field>
             <Field label="Lama penahanan jadwal" htmlFor="holdTier">
-              <select id="holdTier" name="holdTier" defaultValue="standar" className={inputClass}>
+              <select id="holdTier" name="holdTier" defaultValue="standar" className={selectClass}>
                 <option value="singkat">Singkat (2 jam)</option>
                 <option value="standar">Standar (24 jam)</option>
                 <option value="panjang">Panjang (48 jam)</option>
               </select>
             </Field>
             <Field label="Surat rujukan" htmlFor="referralStatus">
-              <select id="referralStatus" name="referralStatus" defaultValue="missing" className={inputClass}>
+              <select
+                id="referralStatus"
+                name="referralStatus"
+                defaultValue="missing"
+                className={selectClass}
+              >
                 <option value="missing">Belum ada</option>
                 <option value="uploaded">Sudah diterima, belum diverifikasi</option>
                 <option value="verified">Sudah diverifikasi</option>
@@ -172,7 +177,7 @@ export function NewEpisodeForm({ zone, today }: { zone: Zone; today: string }) {
             </label>
           </fieldset>
 
-          <fieldset className="mt-6 grid gap-4 sm:grid-cols-2">
+          <fieldset className="mt-6 mb-4 grid gap-4 sm:grid-cols-2">
             <legend className="mb-2 font-display text-xl">Pendamping</legend>
             <label className="flex items-center gap-2 font-semibold sm:col-span-2">
               <input type="checkbox" name="requiresEscort" className="h-5 w-5" /> Pasien wajib didampingi

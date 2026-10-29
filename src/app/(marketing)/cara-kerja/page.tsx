@@ -4,7 +4,7 @@ import { HoldArt } from '@/components/HoldArt';
 import { PageHero } from '@/components/marketing/PageHero';
 import { Steps } from '@/components/marketing/Steps';
 import { LinkButton, Notice, SectionTitle } from '@/components/ui';
-import { links, siteRoutes, withFrom } from '@/config/links';
+import { links } from '@/config/links';
 import { sampleJourney } from '@/content/sampleJourney';
 
 export const metadata: Metadata = {
@@ -21,14 +21,10 @@ export default function CaraKerja() {
         title="Dari beberapa janji temu terpisah menjadi satu perjalanan."
         lead="Sistem tidak hanya mencari slot kosong. Ia memeriksa apakah rangkaian kunjungan itu benar-benar bisa dijalani pasien: urutan layanan, waktu hasil lab, puasa, pendamping, dan jam bus atau kereta."
       >
-        <LinkButton href={withFrom(links.demo.coordinator(), siteRoutes.caraKerja)} external>
+        <LinkButton href={links.app.login()} external>
           Coba sebagai Koordinator
         </LinkButton>
-        <LinkButton
-          href={links.demo.start('1', { stage: 'tahan', view: 'pasien', from: siteRoutes.caraKerja })}
-          external
-          tone="secondary"
-        >
+        <LinkButton href={links.app.login()} external tone="secondary">
           Lihat Contoh Perjalanan Pasien
         </LinkButton>
       </PageHero>
@@ -49,7 +45,7 @@ export default function CaraKerja() {
         <div className="container-page py-14">
           <SectionTitle id="langkah" eyebrow="Empat langkah" title="Setiap langkah bisa Anda coba di demo." />
           <div className="mt-8">
-            <Steps detailed from={siteRoutes.caraKerja} />
+            <Steps detailed />
           </div>
         </div>
       </section>
@@ -107,10 +103,10 @@ export default function CaraKerja() {
             </p>
           </div>
           <div className="flex flex-wrap gap-2">
-            <LinkButton href={links.demo.start('1', { stage: 'tahan', from: siteRoutes.caraKerja })} external>
+            <LinkButton href={links.app.login()} external>
               Buka contoh rencana ditahan
             </LinkButton>
-            <LinkButton href={withFrom(links.demo.home(), siteRoutes.caraKerja)} external tone="secondary">
+            <LinkButton href={links.app.login()} external tone="secondary">
               Pilih skenario lain
             </LinkButton>
           </div>

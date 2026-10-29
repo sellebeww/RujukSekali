@@ -1,13 +1,6 @@
 import { expect, test } from '@playwright/test';
 import { login } from './helpers';
 
-test('Skenario 12a: ?from= dengan URL eksternal ditolak', async ({ page }) => {
-  for (const bad of ['https://evil.example', '//evil.example', '/app']) {
-    await page.goto(`/demo?from=${encodeURIComponent(bad)}`);
-    await expect(page.getByRole('link', { name: 'Kembali ke situs' })).toHaveAttribute('href', '/');
-  }
-});
-
 test('Skenario 12b: token pasien tidak bocor lewat URL atau Referer', async ({ page, browser }) => {
   await login(page);
   await page.getByTestId('queue-item').filter({ hasText: 'Pasien S2' }).click();

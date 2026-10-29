@@ -3,7 +3,7 @@ import { Steps } from '@/components/marketing/Steps';
 import { ResultTiles, SimulationLabel } from '@/components/SimulationResults';
 import { LinkButton, SectionTitle } from '@/components/ui';
 import { brand } from '@/config/brand.config';
-import { links, siteRoutes, withFrom } from '@/config/links';
+import { links } from '@/config/links';
 
 const jsonLd = {
   '@context': 'https://schema.org',
@@ -33,7 +33,7 @@ export default function Home() {
               dijalani.
             </p>
             <div className="fade-up mt-8 flex flex-wrap gap-3 [animation-delay:240ms]">
-              <LinkButton href={withFrom(links.demo.home(), siteRoutes.home)} external>
+              <LinkButton href={links.app.login()} external>
                 Coba Demo Aplikasi
               </LinkButton>
               <LinkButton href={links.site.mintaDemo()} tone="accent">
@@ -92,14 +92,10 @@ export default function Home() {
             <Steps detailed />
           </div>
           <div className="mt-8 flex flex-wrap gap-3">
-            <LinkButton
-              href={links.demo.start('1', { stage: 'tahan', view: 'pasien', from: siteRoutes.home })}
-              external
-              tone="secondary"
-            >
+            <LinkButton href={links.app.login()} external tone="secondary">
               Lihat Contoh Perjalanan Pasien
             </LinkButton>
-            <LinkButton href={withFrom(links.demo.coordinator(), siteRoutes.home)} external tone="secondary">
+            <LinkButton href={links.app.login()} external tone="secondary">
               Coba sebagai Koordinator
             </LinkButton>
           </div>
@@ -200,10 +196,7 @@ export default function Home() {
               Antrean tindakan, opsi yang sudah dicek, dan kendali penuh: setujui, ubah, lepas, atau
               perpanjang dengan alasan.
             </p>
-            <a
-              href={withFrom(links.demo.coordinator(), siteRoutes.home)}
-              className="mt-3 inline-block font-semibold text-teal underline"
-            >
+            <a href={links.app.login()} className="mt-3 inline-block font-semibold text-teal underline">
               Coba dashboard demo →
             </a>
           </li>
@@ -240,7 +233,7 @@ export default function Home() {
               Minta Pilot
             </a>
             <a
-              href={withFrom(links.demo.home(), siteRoutes.home)}
+              href={links.app.login()}
               className="inline-flex min-h-11 items-center rounded-full border border-paper/40 px-6 font-semibold hover:bg-paper/10"
             >
               Coba Demo

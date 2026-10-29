@@ -22,6 +22,7 @@ export function ActionForm({
   children,
   className = '',
   confirm,
+  compact = false,
 }: {
   action: Action;
   hidden?: Record<string, string>;
@@ -31,6 +32,8 @@ export function ActionForm({
   children?: ReactNode;
   className?: string;
   confirm?: string;
+  /** Small inline button for table rows. */
+  compact?: boolean;
 }) {
   const [state, setState] = useState<ActionState>(initial);
   const [pending, start] = useTransition();
@@ -63,7 +66,7 @@ export function ActionForm({
             toast({ ok: !!res.ok, message: res.message, ...(res.details ? { details: res.details } : {}) });
         });
       }}
-      className={`flex flex-col gap-2 ${className}`}
+      className={`flex flex-col gap-2 ${reason ? 'w-full sm:w-auto' : ''} ${className}`}
     >
       {Object.entries(hidden).map(([k, v]) => (
         <input key={k} type="hidden" name={k} value={v} />
@@ -81,13 +84,15 @@ export function ActionForm({
             minLength={5}
             maxLength={300}
             placeholder={reason.placeholder}
-            className="min-h-11 w-full rounded-lg border border-line bg-card px-3 py-2 sm:min-w-64"
+            className="min-h-11 w-full rounded-lg border border-line bg-card px-3 py-2 sm:min-w-72"
           />
         </div>
       )}
       <button
         disabled={pending || !ready}
-        className={`inline-flex min-h-11 items-center justify-center rounded-full border px-5 py-2 font-semibold transition-colors disabled:opacity-60 ${tones[tone]}`}
+        className={`inline-flex items-center justify-center rounded-full border font-semibold transition-colors disabled:opacity-60 ${
+          compact ? 'min-h-9 self-start px-3.5 py-1 text-sm' : 'min-h-11 px-5 py-2'
+        } ${tones[tone]}`}
       >
         {pending ? 'Memproses…' : label}
       </button>

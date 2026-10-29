@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { links, withFrom, siteRoutes } from '@/config/links';
+import { links } from '@/config/links';
 import { Logo } from './Logo';
 import { SessionAwareCta } from './SessionAwareCta';
 
@@ -11,7 +11,7 @@ interface NavItem {
 }
 
 const pill =
-  'inline-flex min-h-11 items-center whitespace-nowrap rounded-full px-3 py-2 text-[0.95rem] font-semibold transition-colors';
+  'inline-flex min-h-11 items-center whitespace-nowrap rounded-full px-3 py-2 text-[0.95rem] font-semibold transition-[color,background-color,transform] duration-150 motion-safe:active:scale-[0.97]';
 
 export function SiteHeader({
   variant,
@@ -53,13 +53,13 @@ export function SiteHeader({
   const nav = variant === 'marketing' ? marketingNav : appNav;
 
   return (
-    <header className="border-b border-line bg-paper/95 backdrop-blur supports-[backdrop-filter]:bg-paper/80">
-      <div className="container-page flex min-h-16 flex-wrap items-center gap-x-4 gap-y-2 py-2">
+    <header className="relative z-40 border-b border-line bg-paper/95 backdrop-blur supports-[backdrop-filter]:bg-paper/80">
+      <div className="container-page flex min-h-16 flex-wrap items-center gap-x-2 gap-y-2 py-2 sm:gap-x-4">
         <Link href={homeHref} className="rounded-md no-underline" aria-label="Beranda">
           <Logo />
         </Link>
 
-        <nav aria-label="Navigasi utama" className="order-3 w-full xl:order-none xl:w-auto xl:flex-1">
+        <nav aria-label="Navigasi utama" className="xl:flex-1">
           <details className="group xl:hidden">
             <summary className={`${pill} cursor-pointer list-none border border-line bg-card`}>
               Menu{' '}
@@ -67,7 +67,7 @@ export function SiteHeader({
                 ▾
               </span>
             </summary>
-            <ul className="mt-2 flex flex-col gap-1 pb-2">
+            <ul className="absolute inset-x-4 top-full z-30 mt-1 flex flex-col gap-1 rounded-xl border border-line bg-card p-2 shadow-lg sm:inset-x-6 sm:left-auto sm:w-72">
               {[...nav, ...(variant === 'marketing' ? [] : profileNav)].map((n) => (
                 <li key={n.href + n.label}>
                   <a href={n.href} rel={outRel} className={`${pill} w-full hover:bg-paper-deep`}>
@@ -75,6 +75,11 @@ export function SiteHeader({
                   </a>
                 </li>
               ))}
+              {variant === 'marketing' && (
+                <li className="sm:hidden">
+                  <SessionAwareCta className={`${pill} w-full hover:bg-paper-deep`} />
+                </li>
+              )}
             </ul>
           </details>
           <ul className="hidden items-center gap-0.5 xl:flex">
@@ -102,11 +107,8 @@ export function SiteHeader({
           )}
           {variant === 'marketing' && (
             <>
-              <SessionAwareCta className={`${pill} hover:bg-paper-deep`} />
-              <a
-                href={withFrom(links.demo.home(), siteRoutes.home)}
-                className={`${pill} bg-teal text-paper hover:bg-ink`}
-              >
+              <SessionAwareCta className={`${pill} hover:bg-paper-deep max-sm:hidden`} />
+              <a href={links.app.login()} className={`${pill} bg-teal text-paper hover:bg-ink`}>
                 Coba Demo
               </a>
             </>

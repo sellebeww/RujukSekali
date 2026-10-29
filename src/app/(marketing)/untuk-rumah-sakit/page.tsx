@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { PageHero } from '@/components/marketing/PageHero';
 import { LinkButton, Notice, SectionTitle } from '@/components/ui';
-import { links, siteRoutes, withFrom } from '@/config/links';
+import { links } from '@/config/links';
 
 export const metadata: Metadata = {
   title: 'Untuk rumah sakit',
@@ -20,11 +20,7 @@ export default function UntukRS() {
         <LinkButton href={links.site.mintaDemo()} tone="accent">
           Minta Pilot
         </LinkButton>
-        <LinkButton
-          href={withFrom(links.demo.coordinator(), siteRoutes.untukRumahSakit)}
-          external
-          tone="secondary"
-        >
+        <LinkButton href={links.app.login()} external tone="secondary">
           Coba dashboard demo
         </LinkButton>
       </PageHero>

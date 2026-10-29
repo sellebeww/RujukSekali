@@ -1,4 +1,4 @@
-import { links, siteRoutes, type DemoStage, type SiteRoute } from '@/config/links';
+import { links, type DemoStage } from '@/config/links';
 
 export const STEPS: { stage: DemoStage; title: string; body: string; demo: string }[] = [
   {
@@ -27,13 +27,7 @@ export const STEPS: { stage: DemoStage; title: string; body: string; demo: strin
   },
 ];
 
-export function Steps({
-  from = siteRoutes.home,
-  detailed = false,
-}: {
-  from?: SiteRoute;
-  detailed?: boolean;
-}) {
+export function Steps({ detailed = false }: { detailed?: boolean }) {
   return (
     <ol className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
       {STEPS.map((s, i) => (
@@ -44,14 +38,7 @@ export function Steps({
           <h3 className="mt-1 text-2xl">{s.title}</h3>
           <p className="mt-2 flex-1 text-ink-soft">{s.body}</p>
           {detailed && (
-            <a
-              href={links.demo.start(s.stage === 'konfirmasi' ? '2' : '1', {
-                stage: s.stage,
-                view: s.stage === 'jalani' ? 'pasien' : 'koordinator',
-                from,
-              })}
-              className="mt-4 font-semibold text-teal underline"
-            >
+            <a href={links.app.login()} className="mt-4 font-semibold text-teal underline">
               {s.demo} di demo →
             </a>
           )}

@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { ActionForm } from '@/components/ActionForm';
 import { Countdown } from '@/components/Countdown';
 import { JourneyTimeline } from '@/components/JourneyTimeline';
-import { Badge, Card, Notice } from '@/components/ui';
+import { Badge, Card, Notice, selectClass } from '@/components/ui';
 import { links } from '@/config/links';
 import { AUDIT_LABEL, DOC_LABEL, DOC_TONE, PLAN_TONE, TIER_LABEL } from '@/content/labels';
 import { PLAN_STATUS_LABEL } from '@/domain/tripPlan';
@@ -485,11 +485,7 @@ export function EpisodeView({ d, zone, now }: { d: EpisodeDetail; zone: Zone; no
               >
                 <label className="mt-2 flex flex-col gap-1 text-sm font-semibold">
                   Prioritas
-                  <select
-                    name="priority"
-                    defaultValue={ep.priority}
-                    className="min-h-11 rounded-lg border border-line bg-card px-3"
-                  >
+                  <select name="priority" defaultValue={ep.priority} className={selectClass}>
                     <option value="rutin">Rutin</option>
                     <option value="segera">Segera</option>
                   </select>

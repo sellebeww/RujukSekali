@@ -12,15 +12,7 @@ const tones: Record<Tone, string> = {
 };
 
 const base =
-  'inline-flex items-center justify-center gap-2 rounded-full border px-5 py-2.5 text-[0.95rem] font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50 min-h-11';
-
-export function Button({
-  tone = 'primary',
-  className = '',
-  ...props
-}: ComponentProps<'button'> & { tone?: Tone }) {
-  return <button {...props} className={`${base} ${tones[tone]} ${className}`} />;
-}
+  'inline-flex items-center justify-center gap-2 rounded-full border px-5 py-2.5 text-[0.95rem] font-semibold transition-[color,background-color,border-color,transform] duration-150 motion-safe:active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-50 min-h-11';
 
 export function LinkButton({
   tone = 'primary',
@@ -134,7 +126,9 @@ export function Field({
 }
 
 export const inputClass =
-  'w-full rounded-lg border border-line bg-card px-3 py-2.5 text-base text-ink placeholder:text-muted/70 focus:border-teal min-h-11';
+  'w-full rounded-lg border border-line bg-card px-3 py-2.5 text-base text-ink placeholder:text-muted/70 transition-colors focus:border-clay min-h-11 hover:border-ink-soft/60 disabled:cursor-not-allowed disabled:bg-paper-deep disabled:text-muted aria-invalid:border-danger';
+
+export const selectClass = `${inputClass} select-chevron pr-9`;
 
 export function SectionTitle({
   eyebrow,

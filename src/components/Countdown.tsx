@@ -23,7 +23,7 @@ export function Countdown({ until, now }: { until: number; now: number }) {
   const left = until - t;
   const tone = left <= 0 ? 'text-danger' : left < 3 * 3600_000 ? 'text-clay' : 'text-ochre';
   return (
-    <span className={`font-semibold ${tone}`} data-testid="countdown">
+    <span className={`font-semibold tabular-nums ${tone}`} data-testid="countdown">
       {fmt(left)}
     </span>
   );

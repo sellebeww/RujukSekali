@@ -1,6 +1,4 @@
 import type { Metadata } from 'next';
-import { cookies } from 'next/headers';
-import { DemoBanner } from '@/components/DemoBanner';
 import { SiteFooter } from '@/components/SiteFooter';
 import { SiteHeader } from '@/components/SiteHeader';
 import { links } from '@/config/links';
@@ -14,7 +12,6 @@ export const dynamic = 'force-dynamic';
 
 export default async function DemoLayout({ children }: { children: React.ReactNode }) {
   await ensureDemoFresh();
-  const from = (await cookies()).get('rs_demo_from')?.value ?? null;
   const nav = [
     { href: links.demo.home(), label: 'Mulai demo' },
     { href: links.demo.coordinator(), label: 'Antrean koordinator' },
@@ -25,7 +22,6 @@ export default async function DemoLayout({ children }: { children: React.ReactNo
   ];
   return (
     <>
-      <DemoBanner from={from} />
       <SiteHeader variant="demo" appNav={nav} />
       <main id="isi" className="flex-1">
         {children}

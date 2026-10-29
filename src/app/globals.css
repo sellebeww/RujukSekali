@@ -29,6 +29,13 @@
   --color-danger: #a1261b;
   --color-danger-soft: #f9dcd8;
 
+  /* Looser line spacing: Tailwind's text-* sizes otherwise override the body's line-height with ~1.4. */
+  --text-xs--line-height: 1.7;
+  --text-sm--line-height: 1.7;
+  --text-base--line-height: 1.75;
+  --text-lg--line-height: 1.7;
+  --text-xl--line-height: 1.6;
+
   --radius-ticket: 14px;
   --shadow-ticket: 0 1px 0 rgb(11 37 64 / 0.05), 0 8px 24px -12px rgb(11 37 64 / 0.22);
 }
@@ -38,11 +45,13 @@
     color: var(--color-ink);
     background: var(--color-paper);
     -webkit-text-size-adjust: 100%;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
   body {
     font-family: var(--font-sans);
     font-size: 1.0625rem;
-    line-height: 1.6;
+    line-height: 1.75;
     min-height: 100dvh;
     display: flex;
     flex-direction: column;
@@ -53,6 +62,14 @@
     font-family: var(--font-display);
     letter-spacing: -0.015em;
     line-height: 1.15;
+    text-wrap: balance;
+  }
+  /* Eyebrow above a page title: utilities such as mt-2 still win. */
+  p + h1 {
+    margin-top: 0.5rem;
+  }
+  p {
+    text-wrap: pretty;
   }
   a {
     text-underline-offset: 3px;
@@ -61,6 +78,12 @@
     outline: 3px solid var(--color-clay);
     outline-offset: 2px;
     border-radius: 4px;
+  }
+  /* Form controls draw their focus ring flush on the border; an offset would read as a second box. */
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible {
+    outline-offset: 0;
   }
   ::selection {
     background: var(--color-ochre-soft);
@@ -74,8 +97,17 @@
     margin-inline: auto;
     padding-inline: 1rem;
   }
+  /* Reading column that keeps the left edge of .container-page instead of centring under a left-aligned hero. */
+  .container-narrow {
+    width: 100%;
+    max-width: 48rem;
+    margin-left: max(0px, calc((100% - 72rem) / 2));
+    margin-right: auto;
+    padding-inline: 1rem;
+  }
   @media (min-width: 640px) {
-    .container-page {
+    .container-page,
+    .container-narrow {
       padding-inline: 1.5rem;
     }
   }
@@ -123,6 +155,12 @@
   .paper-grain {
     background-image: radial-gradient(rgb(11 37 64 / 0.035) 1px, transparent 1px);
     background-size: 4px 4px;
+  }
+  .select-chevron {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2334506b' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
   }
   .skip-link {
     position: absolute;

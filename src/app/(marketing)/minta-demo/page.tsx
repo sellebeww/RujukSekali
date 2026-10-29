@@ -3,7 +3,7 @@ import { LeadForm } from '@/components/marketing/LeadForm';
 import { PageHero } from '@/components/marketing/PageHero';
 import { Placeholder } from '@/components/ui';
 import { brand } from '@/config/brand.config';
-import { links, siteRoutes, withFrom } from '@/config/links';
+import { links } from '@/config/links';
 import { CONSENT_TEXT } from '@/server/usecases/leads';
 
 export const metadata: Metadata = {
@@ -29,10 +29,7 @@ export default function MintaDemo() {
             <p className="mt-1 text-ink-soft">
               Mode demo bisa dicoba sekarang tanpa akun, dengan data sintetis.
             </p>
-            <a
-              href={withFrom(links.demo.home(), siteRoutes.mintaDemo)}
-              className="mt-3 inline-block font-semibold text-teal underline"
-            >
+            <a href={links.app.login()} className="mt-3 inline-block font-semibold text-teal underline">
               Buka demo →
             </a>
           </div>

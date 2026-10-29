@@ -51,7 +51,3 @@ export function requireRole(ctx: Ctx, ...roles: Role[]) {
   if (ctx.actor.type !== 'user' || !ctx.actor.role || !roles.includes(ctx.actor.role))
     throw new ForbiddenError();
 }
-
-export function withActor(ctx: Ctx, actor: Actor): Ctx {
-  return { ...ctx, actor };
-}

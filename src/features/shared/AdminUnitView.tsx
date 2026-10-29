@@ -30,7 +30,7 @@ export function AdminUnitView({
 
       <div className="mt-6 grid gap-5 lg:grid-cols-2">
         {services.map((s) => (
-          <section key={s.id} className="ticket p-5" aria-labelledby={`svc-${s.code}`}>
+          <section key={s.id} className="ticket flex flex-col p-5" aria-labelledby={`svc-${s.code}`}>
             <h2 id={`svc-${s.code}`} className="text-2xl">
               {s.name}
             </h2>
@@ -42,9 +42,9 @@ export function AdminUnitView({
               hidden={{ zone, code: s.code }}
               label="Simpan aturan"
               tone="secondary"
-              className="mt-4"
+              className="mt-4 flex-1"
             >
-              <div className="grid grid-cols-2 gap-3 text-sm">
+              <div className="grid flex-1 grid-cols-2 content-start gap-3 text-sm">
                 {s.fasting && (
                   <label className="flex flex-col gap-1 font-semibold">
                     Jam mulai paling lambat (puasa)
@@ -134,8 +134,8 @@ export function AdminUnitView({
               Kapasitas 14 hari: {s.shortName}
             </h2>
             <div className="ticket mt-3 overflow-x-auto">
-              <table className="w-full min-w-[46rem] text-left text-[0.95rem]">
-                <thead className="border-b border-line bg-paper-deep/60 text-sm">
+              <table className="w-full text-left text-[0.95rem] tabular-nums max-sm:block sm:min-w-152">
+                <thead className="border-b border-line bg-paper-deep/60 text-sm max-sm:sr-only">
                   <tr>
                     <th className="px-3 py-2">Tanggal</th>
                     <th className="px-3 py-2">Kosong</th>
@@ -145,19 +145,32 @@ export function AdminUnitView({
                     <th className="px-3 py-2">Tindakan</th>
                   </tr>
                 </thead>
-                <tbody>
+                <tbody className="max-sm:block">
                   {rows.map((r) => {
                     const cap = allowedHeld(r.total - r.blocked, r.ratio);
+                    // Below sm each row becomes a card: date + action on top, four labelled figures below.
+                    const stat = `px-3 py-2 max-sm:flex max-sm:flex-col max-sm:px-0 max-sm:py-0 max-sm:text-base max-sm:before:text-xs max-sm:before:font-semibold max-sm:before:text-muted max-sm:before:content-[attr(data-label)]`;
                     return (
-                      <tr key={r.localDate} className="border-b border-line/60">
-                        <td className="px-3 py-2 whitespace-nowrap">{formatLocalDate(r.localDate)}</td>
-                        <td className="px-3 py-2">{r.available}</td>
-                        <td className="px-3 py-2">
+                      <tr
+                        key={r.localDate}
+                        className="border-b border-line/60 max-sm:grid max-sm:grid-cols-4 max-sm:gap-x-2 max-sm:gap-y-2 max-sm:px-4 max-sm:py-3"
+                      >
+                        <td className="px-3 py-2 whitespace-nowrap max-sm:col-span-2 max-sm:px-0 max-sm:py-0 max-sm:font-semibold max-sm:self-center">
+                          {formatLocalDate(r.localDate)}
+                        </td>
+                        <td data-label="Kosong" className={`${stat} max-sm:row-start-2`}>
+                          {r.available}
+                        </td>
+                        <td data-label="Ditahan" className={`${stat} max-sm:row-start-2`}>
                           {r.held} / {cap} {r.held >= cap && <Badge tone="danger">penuh</Badge>}
                         </td>
-                        <td className="px-3 py-2">{r.booked}</td>
-                        <td className="px-3 py-2">{r.blocked}</td>
-                        <td className="px-3 py-2">
+                        <td data-label="Terisi" className={`${stat} max-sm:row-start-2`}>
+                          {r.booked}
+                        </td>
+                        <td data-label="Diblokir" className={`${stat} max-sm:row-start-2`}>
+                          {r.blocked}
+                        </td>
+                        <td className="px-3 py-2 max-sm:col-span-2 max-sm:col-start-3 max-sm:row-start-1 max-sm:justify-self-end max-sm:px-0 max-sm:py-0">
                           <ActionForm
                             action={blockDayAction}
                             hidden={{
@@ -168,6 +181,7 @@ export function AdminUnitView({
                             }}
                             label={r.blocked > 0 ? 'Buka blokir' : 'Blokir slot kosong'}
                             tone={r.blocked > 0 ? 'secondary' : 'danger'}
+                            compact
                           />
                         </td>
                       </tr>

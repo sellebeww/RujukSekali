@@ -9,14 +9,14 @@ export default async function DemoHome({ searchParams }: { searchParams: Promise
   return (
     <div className="container-page py-10">
       <p className="text-sm font-semibold tracking-wide text-clay uppercase">Mode demo</p>
-      <h1 className="max-w-3xl text-4xl sm:text-5xl">
+      <h1 className="max-w-4xl text-4xl sm:text-5xl">
         Coba sendiri: dari opsi jadwal sampai pasien tahu harus datang kapan
       </h1>
       <p className="mt-3 max-w-2xl text-lg text-ink-soft">
         Tanpa akun, tanpa instalasi. Semua pasien dan jadwal di sini sintetis, jadi aman untuk menekan tombol
         apa pun.
       </p>
-      <ol className="mt-6 grid max-w-4xl gap-3 sm:grid-cols-3">
+      <ol className="mt-6 grid gap-3 md:grid-cols-3">
         {[
           [
             'Pilih skenario',
@@ -45,6 +45,33 @@ export default async function DemoHome({ searchParams }: { searchParams: Promise
           </li>
         ))}
       </ol>
+      <ul className="mt-8 grid gap-4 md:grid-cols-2">
+        {[
+          {
+            title: 'Saya koordinator',
+            body: 'Petugas rumah sakit yang menyusun opsi jadwal, menahan slot, dan memantau konfirmasi pasien.',
+            href: links.demo.start('1', { stage: 'susun' }),
+            cta: 'Masuk sebagai koordinator →',
+          },
+          {
+            title: 'Saya pasien',
+            body: 'Halaman yang diterima pasien: memilih opsi jadwal dan tahu persis harus datang kapan.',
+            href: links.demo.start('1', { stage: 'tahan', view: 'pasien' }),
+            cta: 'Masuk sebagai pasien →',
+          },
+        ].map((r) => (
+          <li key={r.title} className="ticket flex flex-col p-5">
+            <h2 className="text-2xl">{r.title}</h2>
+            <p className="mt-1 flex-1 text-ink-soft">{r.body}</p>
+            <a
+              href={r.href}
+              className="mt-4 inline-flex min-h-11 items-center self-start rounded-full bg-teal px-4 py-2 font-semibold text-paper hover:bg-ink"
+            >
+              {r.cta}
+            </a>
+          </li>
+        ))}
+      </ul>
       {batas && (
         <div className="mt-4 max-w-2xl">
           <Notice

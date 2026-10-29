@@ -6,7 +6,7 @@ export function LegalDraft({ title, children }: { title: string; children: React
   return (
     <>
       <PageHero eyebrow="Draf" title={title} />
-      <div className="container-page max-w-3xl py-10">
+      <div className="container-narrow py-10">
         <Notice tone="ochre" role="note" title="Draf — perlu ditinjau hukum">
           Dokumen ini adalah draf awal untuk MVP dengan data sintetis dan belum ditinjau oleh penasihat hukum.
           Jangan dianggap final.
